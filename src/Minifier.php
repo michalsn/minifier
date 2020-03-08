@@ -1,13 +1,11 @@
-<?php namespace Michalsn\Minifier\Libraries;
+<?php namespace Michalsn\Minifier;
 
-use CodeIgniter\Config\BaseConfig;
-
-class Minification
+class Minifier
 {
 	/**
 	 * Config object.
 	 *
-	 * @var BaseConfig
+	 * @var \Config\Minify
 	 */
 	protected $config;
 
@@ -18,21 +16,14 @@ class Minification
 	 */
 	protected $error = '';
 
-	/**
-	 * Data array.
-	 *
-	 * @var array
-	 */
-	protected $data = [];
-
 	//--------------------------------------------------------------------
 
 	/**
-	 * Prepare assets to use on website
+	 * Prepare config to use
 	 *
-	 * @param BaseConfig $config
+	 * @param \Config\Minify $config
 	 */
-    public function __construct(BaseConfig $config)
+    public function __construct($config)
     {
     	$this->config = $config;
 	}
@@ -57,7 +48,12 @@ class Minification
 			throw new Exception('Wrong file extension');
 		}
 
-		$versions = $this->version();
+		$versions = $this->getVersion();
+
+		if (empty($versions))
+		{
+			throw new Exception('No files minified yet');
+		}
 
 		$filenames = [];
 
@@ -111,22 +107,29 @@ class Minification
 	 */
 	public function deploy(string $mode = 'all'): bool
 	{
+		if ( ! in_array($mode, ['all', 'js', 'css']))
+		{
+			throw new Exception('Incorrect deploy mode');
+		}
+
+		$files = [];
+
 		try
 		{
 			switch ($mode)
 			{
 				case 'js':
-					$this->deployJs($this->config->js);
+					$files = $this->deployJs($this->config->js);
 					break;
 				case 'css':
-					$this->deployCss($this->config->css);
+					$files = $this->deployCss($this->config->css);
 					break;
 				default:
-					$this->deployJs($this->config->js);
-					$this->deployCss($this->config->css);
+					$files['js']  = $this->deployJs($this->config->js);
+					$files['css'] = $this->deployCss($this->config->css);
 			}
 
-			$this->deployVersion($this->config->dirVersion);
+			$this->setVersion($mode, $files, $this->config->dirVersion);
 
 			return true;
 		} 
@@ -156,23 +159,32 @@ class Minification
 	/**
 	 * Load version file
 	 *
+	 * @param string $dir Directory
+	 *
 	 * @return array
 	 */
-	protected function version(): array
+	protected function getVersion(string $dir, $silent = false): array
 	{
 		static $versions = null;
 
 		// load all versions numbers
 		if ($versions === null)
 		{
-			$dir = rtrim($this->config->dirVersion, '/');
+			$dir = rtrim($dir, '/');
 
-			if (! file_exists($dir.'/versions.json'))
+			if (! file_exists($dir . '/versions.json'))
 			{
-				throw new Exception('Versioning file not exists');
+				if ($silent === false)
+				{
+					throw new Exception('Versioning file not exists');
+				}
+				else
+				{
+					return [];
+				}
 			}
 
-			$versions = json_decode(file_get_contents($dir.'/versions.json'), true);
+			$versions = json_decode(file_get_contents($dir . '/versions.json'), true);
 		}
 
 		return $versions;
@@ -181,15 +193,26 @@ class Minification
 	//--------------------------------------------------------------------
 
 	/**
-	 * Deploy version
+	 * Set version
 	 *
 	 * @return void
 	 */
-	protected function deployVersion()
+	protected function setVersion($mode, $files, $dir)
 	{
-		$dir = rtrim($this->config->dirVersion, '/');
+		$dir = rtrim($dir, '/');
 
-		file_put_contents($dir.'/versions.json', json_encode($this->data));
+		$version = $this->getVersion($dir, true);
+
+		if ($mode === 'all')
+		{
+			$version = $files;
+		}
+		else
+		{
+			$version[$mode] = $files;
+		}
+
+		file_put_contents($dir . '/versions.json', json_encode($version));
 	}
 
 	//--------------------------------------------------------------------
@@ -199,11 +222,13 @@ class Minification
 	 *
 	 * @param array $assets JS assets
 	 *
-	 * @return void
+	 * @return array
 	 */
-	protected function deployJs(array $assets)
+	protected function deployJs(array $assets): array
 	{
 		$dir = rtrim($this->config->dirJs, '/');
+
+		$results = [];
 
 		foreach ($assets as $asset => $files)
 		{
@@ -215,8 +240,10 @@ class Minification
 
 			$miniJs->minify($dir.'/'.$asset);
 
-			$this->data[$asset] = md5_file($dir.'/'.$asset);
+			$results[$asset] = md5_file($dir.'/'.$asset);
 		}
+
+		return $results;
 	}
 
 	//--------------------------------------------------------------------
@@ -226,11 +253,13 @@ class Minification
 	 *
 	 * @param array $assets CSS assets
 	 *
-	 * @return void
+	 * @return array
 	 */
-	protected function deployCss(array $assets)
+	protected function deployCss(array $assets): array
 	{
 		$dir = rtrim($this->config->dirCss, '/');
+
+		$results = [];
 
 		foreach ($assets as $asset => $files)
 		{
@@ -242,8 +271,10 @@ class Minification
 
 			$miniCss->minify($dir.'/'.$asset);
 
-			$this->data[$asset] = md5_file($dir.'/'.$asset);
+			$results[$asset] = md5_file($dir.'/'.$asset);
 		}
+
+		return $results;
 	}
 
 	//--------------------------------------------------------------------

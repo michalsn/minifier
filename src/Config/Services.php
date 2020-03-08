@@ -1,24 +1,19 @@
 <?php namespace Michalsn\Minifier\Config;
 
 use CodeIgniter\Config\BaseService;
-use Michalsn\Minifier\Config\Minify;
-use Michalsn\Minifier\Libraries\Minification;
-
+use Michalsn\Minifier\Minifier;
 
 class Services extends BaseService
 {
-    public static function minifier(BaseConfig $config = null, bool $getShared = true)
+    public static function minifier(bool $getShared = true)
     {
 		if ($getShared)
 		{
-			return static::getSharedInstance('minifier', $config);
+			return static::getSharedInstance('minifier');
 		}
 
-		if (empty($config))
-		{
-			$config = class_exists('\Config\Minifier') ? new \Config\Minifier() : new Minifier();
-		}
+		$config = config('Minifier');
 
-		return new Minification($config);
+		return new Minifier($config);
 	}
 }
