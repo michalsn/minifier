@@ -45,14 +45,14 @@ class Minifier
 
 		if (! in_array($ext, ['js', 'css']))
 		{
-			throw new Exception('Wrong file extension');
+			throw MinifierException::forWrongFileExtension($ext);
 		}
 
 		$versions = $this->getVersion();
 
 		if (empty($versions))
 		{
-			throw new Exception('No files minified yet');
+			throw MinifierException::forNoVersioningFile();
 		}
 
 		$filenames = [];
@@ -109,7 +109,7 @@ class Minifier
 	{
 		if ( ! in_array($mode, ['all', 'js', 'css']))
 		{
-			throw new Exception('Incorrect deploy mode');
+			throw MinifyException::forIncorrectDeploymentMode($mode);
 		}
 
 		$files = [];
@@ -176,7 +176,7 @@ class Minifier
 			{
 				if ($silent === false)
 				{
-					throw new Exception('Versioning file not exists');
+					throw MinifierException::forNoVersioningFile();
 				}
 				else
 				{
