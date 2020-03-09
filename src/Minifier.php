@@ -228,11 +228,13 @@ class Minifier
 	{
 		$dir = rtrim($dir, '/');
 
+		$class = $this->config->adapterJs;
+
 		$results = [];
 
 		foreach ($assets as $asset => $files)
 		{
-			$miniJs = new \MatthiasMullie\Minify\JS();
+			$miniJs = new $class();
 			foreach ($files as $file)
 			{
 				$miniJs->add($dir . '/' . $file);				
@@ -260,11 +262,13 @@ class Minifier
 	{
 		$dir = rtrim($dir, '/');
 
+		$class = $this->config->adapterCss;
+
 		$results = [];
 
 		foreach ($assets as $asset => $files)
 		{
-			$miniCss = new \MatthiasMullie\Minify\CSS();
+			$miniCss = new $class();
 			foreach ($files as $file)
 			{
 				$miniCss->add($dir . '/' . $file);
