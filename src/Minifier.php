@@ -119,14 +119,14 @@ class Minifier
 			switch ($mode)
 			{
 				case 'js':
-					$files = $this->deployJs($this->config->js);
+					$files = $this->deployJs($this->config->js, $this->config->dirJs);
 					break;
 				case 'css':
-					$files = $this->deployCss($this->config->css);
+					$files = $this->deployCss($this->config->css, $this->config->dirCss);
 					break;
 				default:
-					$files['js']  = $this->deployJs($this->config->js);
-					$files['css'] = $this->deployCss($this->config->css);
+					$files['js']  = $this->deployJs($this->config->js, $this->config->dirJs);
+					$files['css'] = $this->deployCss($this->config->css, $this->config->dirCss);
 			}
 
 			$this->setVersion($mode, $files, $this->config->dirVersion);
@@ -220,13 +220,14 @@ class Minifier
 	/**
 	 * Deploy JS
 	 *
-	 * @param array $assets JS assets
+	 * @param array  $assets JS assets
+	 * @param string $dir    Directory
 	 *
 	 * @return array
 	 */
-	protected function deployJs(array $assets): array
+	protected function deployJs(array $assets, string $dir): array
 	{
-		$dir = rtrim($this->config->dirJs, '/');
+		$dir = rtrim($dir, '/');
 
 		$results = [];
 
@@ -235,12 +236,12 @@ class Minifier
 			$miniJs = new \MatthiasMullie\Minify\JS();
 			foreach ($files as $file)
 			{
-				$miniJs->add($dir.'/'.$file);				
+				$miniJs->add($dir . '/' . $file);				
 			}
 
-			$miniJs->minify($dir.'/'.$asset);
+			$miniJs->minify($dir . '/' . $asset);
 
-			$results[$asset] = md5_file($dir.'/'.$asset);
+			$results[$asset] = md5_file($dir . '/' . $asset);
 		}
 
 		return $results;
@@ -251,13 +252,14 @@ class Minifier
 	/**
 	 * Deploy CSS
 	 *
-	 * @param array $assets CSS assets
+	 * @param array  $assets CSS assets
+	 * @param string $dir    Directory
 	 *
 	 * @return array
 	 */
-	protected function deployCss(array $assets): array
+	protected function deployCss(array $assets, string $dir): array
 	{
-		$dir = rtrim($this->config->dirCss, '/');
+		$dir = rtrim($dir, '/');
 
 		$results = [];
 
@@ -266,12 +268,12 @@ class Minifier
 			$miniCss = new \MatthiasMullie\Minify\CSS();
 			foreach ($files as $file)
 			{
-				$miniCss->add($dir.'/'.$file);
+				$miniCss->add($dir . '/' . $file);
 			}
 
-			$miniCss->minify($dir.'/'.$asset);
+			$miniCss->minify($dir . '/' . $asset);
 
-			$results[$asset] = md5_file($dir.'/'.$asset);
+			$results[$asset] = md5_file($dir . '/' . $asset);
 		}
 
 		return $results;
