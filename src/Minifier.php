@@ -40,15 +40,14 @@ class Minifier
 	public function load(string $filename): string
 	{
 		// determine file extension
-		$ext = explode('.', $filename);
-		$ext = end($ext);
+		$ext = pathinfo($filename, PATHINFO_EXTENSION);
 
 		if (! in_array($ext, ['js', 'css']))
 		{
 			throw MinifierException::forWrongFileExtension($ext);
 		}
 
-		$versions = $this->getVersion();
+		$versions = $this->getVersion($this->config->dirVersion);
 
 		if (empty($versions))
 		{
@@ -60,9 +59,9 @@ class Minifier
 		// do we use combined+minified+versioned assets?
 		if ($this->config->minify)
 		{
-			if (isset($versions[$filename]))
+			if (isset($versions[$ext][$filename]))
 			{
-				$filenames[] = $filename . '?v=' . $versions[$filename];
+				$filenames[] = $filename . '?v=' . $versions[$ext][$filename];
 			}
 		}
 		else
@@ -197,7 +196,7 @@ class Minifier
 	 *
 	 * @return void
 	 */
-	protected function setVersion($mode, $files, $dir)
+	protected function setVersion($mode, $files, $dir): void
 	{
 		$dir = rtrim($dir, '/');
 
