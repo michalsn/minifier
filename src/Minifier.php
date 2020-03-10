@@ -1,5 +1,7 @@
 <?php namespace Michalsn\Minifier;
 
+use Michalsn\Minifier\Exceptions\MinifierException;
+
 class Minifier
 {
 	/**
@@ -108,7 +110,7 @@ class Minifier
 	{
 		if ( ! in_array($mode, ['all', 'js', 'css']))
 		{
-			throw MinifyException::forIncorrectDeploymentMode($mode);
+			throw MinifierException::forIncorrectDeploymentMode($mode);
 		}
 
 		$files = [];

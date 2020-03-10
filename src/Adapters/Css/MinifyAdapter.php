@@ -1,7 +1,6 @@
-<?php namespace Michalsn\Minifier\Css\Adapters;
+<?php namespace Michalsn\Minifier\Adapters\Css;
 
-use Michalsn\Minifier\AdapterInterface;
-use MatthiasMullie\Minify;
+use Michalsn\Minifier\Adapters\AdapterInterface;
 
 class MinifyAdapter implements AdapterInterface
 {
@@ -14,7 +13,7 @@ class MinifyAdapter implements AdapterInterface
 
 	public function __construct()
 	{
-		$this->adapter = new CSS();
+		$this->adapter = new \MatthiasMullie\Minify\CSS();
 	}
 
 	public function add(string $file)

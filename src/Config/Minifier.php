@@ -8,9 +8,9 @@ class Minifier extends BaseConfig
 
 	public $baseUrl = null;
 
-	public $adapterJs = \Michalsn\Minifier\Js\Adapters\MinifyAdapter::class;
+	public $adapterJs = \Michalsn\Minifier\Adapters\Js\MinifyAdapter::class;
 
-	public $adapterCss = \Michalsn\Minifier\Css\Adapters\MinifyAdapter::class;
+	public $adapterCss = \Michalsn\Minifier\Adapters\Css\MinifyAdapter::class;
 
 	public $dirJs = './assets/js';
 
