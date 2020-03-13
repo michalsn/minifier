@@ -1,7 +1,7 @@
 <?php namespace Michalsn\Minifier\Commands;
 
-use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
+use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\Config\Services;
 
 class MinifyAll extends BaseCommand
