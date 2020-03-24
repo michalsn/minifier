@@ -11,13 +11,13 @@ This library offers a minification and versioning for CSS and JS files.
 Download this repo and then enable it by editing **app/Config/Autoload.php** and adding the **Michalsn\Minifier**
 namespace to the **$psr4** array. For example, if you copied it into **app/ThirdParty**:
 
-```
-    $psr4 = [
-        'Config'      => APPPATH . 'Config',
-        APP_NAMESPACE => APPPATH,
-        'App'         => APPPATH,
-        'Michalsn\Minifier' => APPPATH .'ThirdParty/minifier/src',
-    ];
+```php
+$psr4 = [
+    'Config'      => APPPATH . 'Config',
+    APP_NAMESPACE => APPPATH,
+    'App'         => APPPATH,
+    'Michalsn\Minifier' => APPPATH .'ThirdParty/minifier/src',
+];
 ```
 ## Configuration
 
@@ -30,18 +30,18 @@ Then you can adjust it to your needs. By default file will be present in `app/Co
 
 You should define an array of files that you want to minify, ie:
 
-```
-	'all.min.js' => [
-		'jquery-3.2.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
-	]
+```php
+'all.min.js' => [
+	'jquery-3.2.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
+]
 ```
 
 or
 
-```
-	'all.min.css' => [
-		'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
-	]
+```php
+'all.min.css' => [
+	'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
+]
 ```
 
 This way requesting for a `all.min.js` or `all.min.css` file will return a minified and combined version of all files in a given array.
@@ -55,14 +55,14 @@ To actually minify all the files we have to run command:
 This will prepare everything and will set up a versioning.
 Now in our code we just need to call:
 
-```
-	minifier('all.min.js');
+```php
+minifier('all.min.js');
 ```
 
 or
 
-```
-	minifier('all.min.css');
+```php
+minifier('all.min.css');
 ```
 
 To generate a proper tag with desired file to load.
