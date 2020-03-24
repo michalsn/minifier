@@ -1,6 +1,6 @@
-# CodeIgniter4 Minifier
+# Minifier
 
-This library offers a minification and versioning for CSS and JS files.
+This library for CodeIgniter offers a minification and versioning for CSS and JS files.
 
 ## Installation via composer
 
