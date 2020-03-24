@@ -1,6 +1,6 @@
 # Minifier
 
-This library for CodeIgniter offers a minification and versioning for CSS and JS files.
+This library for CodeIgniter4 offers a minification and versioning for CSS and JS files.
 
 ## Installation via composer
 
@@ -53,7 +53,7 @@ To actually minify all the files we have to run command:
 	> php spark minify:all
 
 This will prepare everything and will set up a versioning.
-Now in our code we just need to call:
+Now to generate a proper tag with desired file to load, you have to make a simple call in your code:
 
 ```php
 minifier('all.min.js');
@@ -65,5 +65,5 @@ or
 minifier('all.min.css');
 ```
 
-To generate a proper tag with desired file to load.
+
 
