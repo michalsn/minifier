@@ -1,6 +1,6 @@
 # Minifier
 
-This library for CodeIgniter4 offers a minification and versioning for CSS and JS files.
+Asset minification and versioning library for CodeIgniter 4.
 
 ## Installation via composer
 
@@ -31,17 +31,21 @@ Then you can adjust it to your needs. By default file will be present in `app/Co
 You should define an array of files that you want to minify, ie:
 
 ```php
-'all.min.js' => [
-	'jquery-3.2.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
-]
+public $js = [
+	'all.min.js' => [
+		'jquery-3.2.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
+	]
+];
 ```
 
 or
 
 ```php
-'all.min.css' => [
-	'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
-]
+public $css = [
+	'all.min.css' => [
+		'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
+	]
+];
 ```
 
 This way requesting for a `all.min.js` or `all.min.css` file will return a minified and combined version of all files in a given array.
