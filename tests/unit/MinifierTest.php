@@ -68,6 +68,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
 	public function testLoadCss()
 	{
+		$this->minifier->deploy('css');
 		$result = $this->minifier->load('all.min.css');
 
 		$this->assertEquals('<link rel="stylesheet" href="http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=50a35b0b1d1c3798aa556b8245314930">' . PHP_EOL, $result);
