@@ -25,7 +25,8 @@
   },
   "minimum-stability": "dev",
   "require-dev": {
-    "phpunit/phpunit" : "8.5.*"
+    "phpunit/phpunit" : "8.5.*",
+    "codeigniter4/codeigniter4": "dev-develop"
   },
   "autoload": {
     "psr-4": {
