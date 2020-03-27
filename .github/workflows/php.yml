@@ -3,7 +3,7 @@ name: PHP Tests
 on:
   push:
     branches: 
-      - develop
+      - master
 
 jobs:
   build:
