@@ -1,4 +1,4 @@
-# Minifier
+# Minifier [![](https://github.com/michalsn/minifier/workflows/PHP%20Tests/badge.svg)](https://github.com/michalsn/minifier/actions?query=workflow%3A%22PHP+Tests%22)
 
 Asset minification and versioning library for CodeIgniter 4.
 
