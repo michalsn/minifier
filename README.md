@@ -69,6 +69,12 @@ or
 minifier('all.min.css');
 ```
 
+Make sure to load a minifier helper in your controller first, by calling:
+
+```php
+helper('minifier');
+```
+
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
