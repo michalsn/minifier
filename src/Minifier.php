@@ -192,7 +192,7 @@ class Minifier
 	 *
 	 * @return array
 	 */
-	protected function getVersion(string $dir, $silent = false): array
+	protected function getVersion(string $dir): array
 	{
 		static $versions = null;
 
@@ -203,14 +203,7 @@ class Minifier
 
 			if (! file_exists($dir . '/versions.json'))
 			{
-				if ($silent === false)
-				{
-					throw MinifierException::forNoVersioningFile();
-				}
-				else
-				{
-					return [];
-				}
+				throw MinifierException::forNoVersioningFile();
 			}
 
 			$versions = json_decode(file_get_contents($dir . '/versions.json'), true);
@@ -230,18 +223,21 @@ class Minifier
 	{
 		$dir = rtrim($dir, '/');
 
-		$version = $this->getVersion($dir, true);
+		if (file_exists($dir . '/versions.json'))
+		{
+			$versions = json_decode(file_get_contents($dir . '/versions.json'), true);
+		}
 
 		if ($mode === 'all')
 		{
-			$version = $files;
+			$versions = $files;
 		}
 		else
 		{
-			$version[$mode] = $files;
+			$versions[$mode] = $files;
 		}
 
-		file_put_contents($dir . '/versions.json', json_encode($version));
+		file_put_contents($dir . '/versions.json', json_encode($versions));
 	}
 
 	//--------------------------------------------------------------------
