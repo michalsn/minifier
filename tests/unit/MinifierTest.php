@@ -46,6 +46,9 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
 		$this->assertEquals('<script type="text/javascript" src="%s"></script>', $this->config->tagJs);
 		$this->assertEquals('<link rel="stylesheet" href="%s">', $this->config->tagCss);
+
+		$this->assertEquals(['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']], $this->config->js);
+		$this->assertEquals(['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']], $this->config->css);
 	}
 
 	public function testDeployJs()
@@ -89,6 +92,8 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 		$this->config->baseCssUrl = 'http://css.localhost/';
 
 		$this->minifier = new Minifier($this->config);
+
+		$this->minifier->deploy('all');
 
 		$result = $this->minifier->load('all.min.css');
 
