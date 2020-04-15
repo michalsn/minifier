@@ -76,15 +76,8 @@ class Minifier
 		// determine tag template for file
 		$tag = ($ext === 'js') ?  $this->config->tagJs : $this->config->tagCss;
 
-		// determine file folder
-		$dir = ($ext === 'js') ? $this->config->dirJs : $this->config->dirCss;
-		$dir = ltrim(trim($dir, '/'), './');
-
-		// add base url if needed
-		if ($this->config->baseUrl !== null)
-		{
-			$dir = rtrim($this->config->baseUrl, '/') . '/' . $dir;
-		}
+		// determine base URL address
+		$dir = $this->determineUrl($ext);
 
 		// prepare output
 		$output = '';
@@ -153,6 +146,41 @@ class Minifier
 	public function getError(): string
 	{
 		return $this->error;
+	}
+
+	//--------------------------------------------------------------------
+
+	/**
+	 * Determine URL address for asset
+	 *
+	 * @param string $ext Extension type
+	 *
+	 * @return string
+	 */
+	protected function determineUrl(string $ext): string
+	{
+		if ($ext === 'js' && $this->config->baseJsUrl !== null)
+		{
+			return rtrim($this->config->baseJsUrl, '/');
+		}
+
+		if ($ext === 'css' && $this->config->baseCssUrl !== null)
+		{
+			return rtrim($this->config->baseCssUrl, '/');
+		}
+
+		// determine file folder
+		$dir = ($ext === 'js') ? $this->config->dirJs : $this->config->dirCss;
+		$dir = ltrim(trim($dir, '/'), './');
+
+		// add base url if needed
+		if ($this->config->baseUrl !== null)
+		{
+			$dir = rtrim($this->config->baseUrl, '/') . '/' . $dir;
+		}
+
+		return $dir;
+
 	}
 
 	//--------------------------------------------------------------------
