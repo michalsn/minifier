@@ -40,6 +40,14 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 */
 	}
 
+	public function testConfig()
+	{
+		$this->assertTrue($this->config instanceof \Michalsn\Minifier\Config\Minifier);
+
+		$this->assertEquals('<script type="text/javascript" src="%s"></script>', $this->config->tagJs);
+		$this->assertEquals('<link rel="stylesheet" href="%s">', $this->config->tagCss);
+	}
+
 	public function testDeployJs()
 	{
 		$this->minifier = new Minifier($this->config);
