@@ -77,7 +77,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
 		$this->assertTrue($result);
 	}
-/*
+
 	public function testLoadJs()
 	{
 		$this->minifier = new Minifier($this->config);
@@ -86,14 +86,12 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
 		$this->assertEquals('<script type="text/javascript" src="http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122"></script>' . PHP_EOL, $result);
 	}
-*/
+
 	public function testLoadCssWithBaseCssUrl()
 	{
 		$this->config->baseCssUrl = 'http://css.localhost/';
 
 		$this->minifier = new Minifier($this->config);
-
-		$this->minifier->deploy('all');
 
 		$result = $this->minifier->load('all.min.css');
 
