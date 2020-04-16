@@ -9,7 +9,7 @@ class MinifierException extends \RuntimeException implements ExceptionInterface
 
     public static function forNoVersioningFile()
     {
-        return new self(lang('Minifier.noWersioningFile'));
+        return new self(lang('Minifier.noVersioningFile'));
     }
 
     public static function forIncorrectDeploymentMode(string $mode)
