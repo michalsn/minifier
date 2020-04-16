@@ -14,9 +14,9 @@ namespace to the **$psr4** array. For example, if you copied it into **app/Third
 ```php
 $psr4 = [
 	'Michalsn\Minifier' => APPPATH . 'ThirdParty/minifier/src',
-    'Config'      => APPPATH . 'Config',
-    APP_NAMESPACE => APPPATH,
-    'App'         => APPPATH,
+	'Config'      => APPPATH . 'Config',
+	APP_NAMESPACE => APPPATH,
+	'App'         => APPPATH,
 ];
 ```
 ## Configuration
