@@ -7,7 +7,7 @@ interface AdapterInterface
      *
      * @param string $file
      *
-     * @return mixed
+     * @return void;
      */
     public function add(string $file);
 
@@ -16,7 +16,7 @@ interface AdapterInterface
      *
      * @param string $file
      *
-     * @return mixed
+     * @return void;
      */
     public function minify(string $file);
 }
