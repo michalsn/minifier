@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - New optional config variables `$baseJsUrl` and `$baseCssUrl` to handle serving assets from separate domains.
 
 ### Changed
+- Use spaces instead of tabs.
 - Updates in README file.
 
 ### Fixed
