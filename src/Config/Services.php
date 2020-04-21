@@ -7,13 +7,13 @@ class Services extends BaseService
 {
     public static function minifier(bool $getShared = true)
     {
-		if ($getShared)
-		{
-			return static::getSharedInstance('minifier');
-		}
+        if ($getShared)
+        {
+            return static::getSharedInstance('minifier');
+        }
 
-		$config = config('Minifier');
+        $config = config('Minifier');
 
-		return new Minifier($config);
-	}
+        return new Minifier($config);
+    }
 }

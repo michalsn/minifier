@@ -13,18 +13,18 @@ class MinifyCss extends BaseCommand
     //--------------------------------------------------------------------
 
     /**
-	 * Prepare assets to use on website
-	 *
-	 * @param array $params
-	 */
+     * Prepare assets to use on website
+     *
+     * @param array $params
+     */
     public function run(array $params)
     {
         $benchmark = Services::timer();
 
         $benchmark->start('minifier');
 
-    	$minify = Services::minifier();
-    	$result = $minify->deploy('css');
+        $minify = Services::minifier();
+        $result = $minify->deploy('css');
 
         $benchmark->stop('minifier');
 
@@ -37,9 +37,9 @@ class MinifyCss extends BaseCommand
         $time = $benchmark->getElapsedTime('minifier');
 
         CLI::write('Finished in: ' . $time . 's.'); 
-        CLI::write('CSS files were successfully generated.', 'green');   	
-	}
+        CLI::write('CSS files were successfully generated.', 'green');      
+    }
 
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
 
 }

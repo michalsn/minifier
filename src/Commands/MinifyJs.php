@@ -13,18 +13,18 @@ class MinifyJs extends BaseCommand
     //--------------------------------------------------------------------
 
     /**
-	 * Prepare assets to use on website
-	 *
-	 * @param array $params
-	 */
+     * Prepare assets to use on website
+     *
+     * @param array $params
+     */
     public function run(array $params)
     {
         $benchmark = Services::timer();
 
         $benchmark->start('minifier');
 
-    	$minify = Services::minifier();
-    	$result = $minify->deploy('js');
+        $minify = Services::minifier();
+        $result = $minify->deploy('js');
 
         $benchmark->stop('minifier');
 
@@ -37,9 +37,9 @@ class MinifyJs extends BaseCommand
         $time = $benchmark->getElapsedTime('minifier');
 
         CLI::write('Finished in: ' . $time . 's.'); 
-        CLI::write('JS files were successfully generated.', 'green');   	
-	}
+        CLI::write('JS files were successfully generated.', 'green');       
+    }
 
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
 
 }

@@ -13,18 +13,18 @@ class MinifyAll extends BaseCommand
     //--------------------------------------------------------------------
 
     /**
-	 * Prepare assets to use on website
-	 *
-	 * @param array $params
-	 */
+     * Prepare assets to use on website
+     *
+     * @param array $params
+     */
     public function run(array $params)
     {
         $benchmark = Services::timer();
 
         $benchmark->start('minifier');
 
-    	$minify = Services::minifier();
-    	$result = $minify->deploy();
+        $minify = Services::minifier();
+        $result = $minify->deploy();
 
         $benchmark->stop('minifier');
 
@@ -37,9 +37,9 @@ class MinifyAll extends BaseCommand
         $time = $benchmark->getElapsedTime('minifier');
 
         CLI::write('Finished in: ' . $time . 's.'); 
-        CLI::write('All files were successfully generated.', 'green');   	
-	}
+        CLI::write('All files were successfully generated.', 'green');      
+    }
 
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
 
 }
