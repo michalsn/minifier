@@ -94,10 +94,10 @@ After running command:
 
 You can modify the config file which by default is copied to the path `app/Config/Minifier.php`. Here are your options with a description.
 
-Variable name | Default value | Options | Desctiption
-------------- | ------------- | ------- | -----------
+Variable | Default value | Options | Desctiption
+-------- | ------------- | ------- | -----------
 `$minify`| `true` | `true`, `false` | Use this variable to turn on and off minification of the assets. Turning off can be useful during app development - for easy debugging.
-`baseUrl` | `null` | | Use this variable when you want to set absolute path to the asset files. If no other URLs are set, like `$baseJsUrl` or `$baseCssUrl` then values set to `$dirJS` and `$dirCss` will be added to the final URL.
+`$baseUrl` | `null` | | Use this variable when you want to set absolute path to the asset files. If no other URLs are set, like `$baseJsUrl` or `$baseCssUrl` then values set to `$dirJS` and `$dirCss` will be added to the final URL.
 `$baseJsUrl` | `null` | | Use this variable when your JS assets are served from subdomain. Bare in mind that in this case variable `$dirJs` won't be added to the URL.
 `$baseCssUrl` | `null` | | Use this variable when your CSS assets are served from subdomain. Bare in mind that in this case variable `$dirCSS` won't be added to the URL.
 `$adapterJs` | `\Michalsn\Minifier\Adapters\Js\MinifyAdapter::class` | | Adapter to use for minifying JS files. You can also implement your own JS adapter to minify assets and replace this class.
