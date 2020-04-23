@@ -29,7 +29,19 @@ class Minifier
     {
         $this->config = $config;
 
-        // make this check for backward compatibility
+        // make some checks for backward compatibility
+        // just in case someone doesn't publish/update
+        // their configuration file
+        if (! isset($this->config->baseJsUrl))
+        {
+            $this->config->baseJsUrl = null;
+        }
+
+        if (! isset($this->config->baseCssUrl))
+        {
+            $this->config->baseCssUrl = null;
+        }
+
         if (! isset($this->config->returnType))
         {
             $this->config->returnType = 'html';
