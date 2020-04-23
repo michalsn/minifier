@@ -14,11 +14,11 @@ class MinifierException extends \RuntimeException implements ExceptionInterface
 
     public static function forIncorrectDeploymentMode(string $mode)
     {
-        return new self(lang('Minifier.incorrectDeploymentMode'), [$mode]);
+        return new self(lang('Minifier.incorrectDeploymentMode', [$mode]));
     }
 
     public static function forWrongReturnType(string $type)
     {
-        return new self(lang('Minifier.wrongReturnType'), [$type]);
+        return new self(lang('Minifier.wrongReturnType', [$type]));
     }
 }

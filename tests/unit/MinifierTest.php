@@ -1,6 +1,7 @@
 <?php
 
 use Michalsn\Minifier\Minifier;
+use Michalsn\Minifier\Exceptions\MinifierException;
 
 class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 {
@@ -23,19 +24,19 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
 
 /*
-        if (file_exists($config->dirJs . '/all.min.js'))
+        if (file_exists($this->config->dirJs . '/all.min.js'))
         {
-            unlink($config->dirJs . '/all.min.js');
+            unlink($this->config->dirJs . '/all.min.js');
         }
 
-        if (file_exists($config->dirCss . '/all.min.css'))
+        if (file_exists($this->config->dirCss . '/all.min.css'))
         {
-            unlink($config->dirCss . '/all.min.css');
+            unlink($this->config->dirCss . '/all.min.css');
         }
 
-        if (file_exists($config->dirVersion . '/versions.js'))
+        if (file_exists($this->config->dirVersion . '/versions.js'))
         {
-            unlink($config->dirVersion . 'versions.js');
+            unlink($this->config->dirVersion . '/versions.js');
         }
 */
     }
@@ -49,6 +50,41 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $this->assertEquals(['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']], $this->config->js);
         $this->assertEquals(['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']], $this->config->css);
+    }
+
+    public function testDeployExceptionForIncorrectDeploymentMode()
+    {
+        $this->expectException(MinifierException::class);
+        $this->expectExceptionMessage('The "incorrect" is not correct deployment mode');
+
+        $this->minifier = new Minifier($this->config);
+
+        $this->minifier->deploy('incorrect');
+    }
+
+    public function testLoadExceptionForMissingVersioningFile()
+    {
+        $this->expectException(MinifierException::class);
+        $this->expectExceptionMessage('There is no file with versioning. Run "php spark minify:all');
+
+        if (file_exists($this->config->dirVersion . '/versions.json'))
+        {
+            unlink($this->config->dirVersion . '/versions.json');
+        }
+
+        $this->minifier = new Minifier($this->config);
+
+        $this->minifier->load('all.min.css');
+    }
+
+    public function testLoadExceptionForWrongFileExtension()
+    {
+        $this->expectException(MinifierException::class);
+        $this->expectExceptionMessage('Wrong file extension: ".php".');
+
+        $this->minifier = new Minifier($this->config);
+
+        $this->minifier->load('all.min.php');
     }
 
     public function testDeployJs()
@@ -156,6 +192,17 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $result = $this->minifier->load('all.min.css');
 
         $this->assertEquals(['http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=50a35b0b1d1c3798aa556b8245314930'], $result);
+    }
+
+    public function testLoadExceptionForWrongReturnType()
+    {
+        $this->expectException(MinifierException::class);
+        $this->expectExceptionMessage('The "php" is not correct return type.');
+
+        $this->config->returnType = 'php';
+        $this->minifier = new Minifier($this->config);
+
+       $this->minifier->load('all.min.css');
     }
 
 }
