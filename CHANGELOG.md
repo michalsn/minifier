@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- New config variable `$returnType` that specifies if we want to get `html` (default), `json` or php `array` as a result when we load a file to display.
 - New optional config variables `$baseJsUrl` and `$baseCssUrl` to handle serving assets from separate domains.
 
 ### Changed
