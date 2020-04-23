@@ -92,7 +92,7 @@ After running command:
 
     > php spark minify:publish
 
-You can modify the config file which by default is copied to the path `app/Config/Minify.php`. Here are your options with a description.
+You can modify the config file which by default is copied to the path `app/Config/Minifier.php`. Here are your options with a description.
 
 Variable name | Default value | Options | Desctiption
 ------------- | ------------- | ------- | -----------
