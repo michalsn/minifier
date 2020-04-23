@@ -41,7 +41,7 @@ class Minifier extends BaseConfig
     // Base CSS URL for assets
     //--------------------------------------------------------------------
     // Use this variable when your CSS assets are served from subdomain.
-    // Bare in mind that in this case variable $dirCSSs won't be added
+    // Bare in mind that in this case variable $dirCSS won't be added
     // to the URL.
     //
     // Example value:
