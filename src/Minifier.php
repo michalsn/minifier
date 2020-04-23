@@ -28,6 +28,12 @@ class Minifier
     public function __construct($config)
     {
         $this->config = $config;
+
+        // make this check for backward compatibility
+        if (! isset($this->config->returnType))
+        {
+            $this->config->returnType = 'html';
+        }
     }
 
     //--------------------------------------------------------------------
@@ -37,9 +43,9 @@ class Minifier
      *
      * @param string $filename File name
      *
-     * @return string
+     * @return string|array
      */
-    public function load(string $filename): string
+    public function load(string $filename)
     {
         // determine file extension
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
@@ -54,6 +60,11 @@ class Minifier
         if (empty($versions))
         {
             throw MinifierException::forNoVersioningFile();
+        }
+
+        if (! in_array($this->config->returnType, ['html', 'array', 'json']))
+        {
+            throw MinifierException::forWrongReturnType($this->config->returnType);
         }
 
         $filenames = [];
@@ -80,14 +91,7 @@ class Minifier
         $dir = $this->determineUrl($ext);
 
         // prepare output
-        $output = '';
-
-        foreach ($filenames as $file)
-        {
-            $output .= sprintf($tag, $dir . '/' . $file) . PHP_EOL;
-        }
-
-        return $output;
+        return $this->prepareOutput($filenames, $dir, $tag);
     }
 
     //--------------------------------------------------------------------
@@ -181,6 +185,47 @@ class Minifier
 
         return $dir;
 
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Prepare output to return a desired format
+     *
+     * @param array  $filenames Filenames to return
+     * @param string $dir       Directory
+     * @param string $tag       HTML tag
+     *
+     * @return string|array
+     */
+    protected function prepareOutput(array $filenames, string $dir, string $tag)
+    {
+        // prepare output
+        $output = '';
+
+        foreach ($filenames as &$file)
+        {
+            if ($this->config->returnType === 'html')
+            {
+                $output .= sprintf($tag, $dir . '/' . $file) . PHP_EOL;
+            }
+            else
+            {
+                $file = $dir . '/' . $file;
+            }
+        }
+
+        if ($this->config->returnType === 'html')
+        {
+            return $output;
+        }
+
+        if ($this->config->returnType === 'json')
+        {
+            return json_encode($filenames);
+        }
+
+        return $filenames;
     }
 
     //--------------------------------------------------------------------

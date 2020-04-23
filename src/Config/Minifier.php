@@ -92,30 +92,42 @@ class Minifier extends BaseConfig
     public $tagCss = '<link rel="stylesheet" href="%s">';
 
     //--------------------------------------------------------------------
+    // Return type
+    //--------------------------------------------------------------------
+    // Determines how the files will be returned. The dafault value is
+    // 'html' and it uses the $tagJs and $tagCss variables. Using 'array'
+    // will return the php array and 'json' type will return a json string.
+    //
+    // Avaliable types:
+    //      'html', 'array', 'json'
+
+    public $returnType = 'html';
+
+    //--------------------------------------------------------------------
     // JS files config
     //--------------------------------------------------------------------
     // This array defines files to minify.
-    // 
+    //
     // Example array:
     //      'all.min.js' => [
     //          'jquery-3.2.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
     //      ],
 
     public $js = [
-        
+
     ];
 
     //--------------------------------------------------------------------
     // CSS files config
     //--------------------------------------------------------------------
     // This array defines files to minify.
-    // 
+    //
     // Example array:
     //      'all.min.css' => [
     //          'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
     //      ],
 
     public $css = [
-        
+
     ];
 }
