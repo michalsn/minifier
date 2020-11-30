@@ -92,6 +92,13 @@ class Minifier extends BaseConfig
 	public $tagCss = '<link rel="stylesheet" href="%s">';
 
 	//--------------------------------------------------------------------
+	// Enable auto deploy on change
+	//--------------------------------------------------------------------
+	// Use this variable to automatically deploy when there are any changes in assets files.
+
+	public $deploy_on_change = false;
+
+	//--------------------------------------------------------------------
 	// JS files config
 	//--------------------------------------------------------------------
 	// This array defines files to minify.
