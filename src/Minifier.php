@@ -55,6 +55,12 @@ class Minifier
 		{
 			throw MinifierException::forNoVersioningFile();
 		}
+        
+		// auto deploy on change
+		if ($this->config->deploy_on_change)
+		{
+		    	$this->controlUpdate($filename,$ext);
+		}
 
 		$filenames = [];
 
@@ -306,6 +312,45 @@ class Minifier
 		}
 
 		return $results;
+	}
+
+	//--------------------------------------------------------------------
+
+	/**
+	* Control Update
+	*
+	* @return void
+	*/
+	protected function controlUpdate($filename,$ext): void
+	{
+		switch ($ext) {
+			case 'js':
+				$minifiedFileTime = filemtime($this->config->dirJs . '/' . $filename);
+				$tableJs = $this->config->js;
+				foreach ($tableJs[$filename] as $file)
+				{
+				    $sourceFileTime = filemtime($this->config->dirJs . '/' . $file);
+				    if ($sourceFileTime > $minifiedFileTime)
+				    {
+					$this->deploy('js');
+					break;
+				    }
+				}
+				break;
+			case 'css':
+				$minifiedFileTime = filemtime($this->config->dirCss . '/' . $filename);
+				$tableCss = $this->config->css;
+				foreach ($tableCss[$filename] as $file)
+				{
+				    $sourceFileTime = filemtime($this->config->dirCss . '/' . $file);
+				    if ($sourceFileTime > $minifiedFileTime)
+				    {
+					$this->deploy('css');
+					break;
+				    }
+				}
+				break;
+		}
 	}
 
 	//--------------------------------------------------------------------
