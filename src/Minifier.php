@@ -323,33 +323,42 @@ class Minifier
 	*/
 	protected function controlUpdate($filename,$ext): void
 	{
-		switch ($ext) {
-			case 'js':
-				$minifiedFileTime = filemtime($this->config->dirJs . '/' . $filename);
-				$tableJs = $this->config->js;
-				foreach ($tableJs[$filename] as $file)
+		case 'js':
+			$tableJs = array($filename => $this->config->js[$filename]);
+			if (!file_exists($this->config->dirJs . '/' . $filename))
+			{
+			    	$this->deployJs($tableJs, $this->config->dirJs);
+			    	break;
+			}
+			$minifiedFileTime = filemtime($this->config->dirJs . '/' . $filename);
+			foreach ($tableJs[$filename] as $file)
+			{
+				$sourceFileTime = filemtime($this->config->dirJs . '/' . $file);
+				if ($sourceFileTime > $minifiedFileTime)
 				{
-				    $sourceFileTime = filemtime($this->config->dirJs . '/' . $file);
-				    if ($sourceFileTime > $minifiedFileTime)
-				    {
-					$this->deploy('js');
+					$this->deployJs($tableJs, $this->config->dirJs);
 					break;
-				    }
 				}
+			}
+			break;
+		case 'css':
+			$tableCss = array($filename => $this->config->css[$filename]);
+			if (!file_exists($this->config->dirCss . '/' . $filename))
+			{
+				$this->deployCss($tableCss, $this->config->dirCss);
 				break;
-			case 'css':
-				$minifiedFileTime = filemtime($this->config->dirCss . '/' . $filename);
-				$tableCss = $this->config->css;
-				foreach ($tableCss[$filename] as $file)
+			}
+			$minifiedFileTime = filemtime($this->config->dirCss . '/' . $filename);
+			foreach ($tableCss[$filename] as $file)
+			{
+				$sourceFileTime = filemtime($this->config->dirCss . '/' . $file);
+				if ($sourceFileTime > $minifiedFileTime)
 				{
-				    $sourceFileTime = filemtime($this->config->dirCss . '/' . $file);
-				    if ($sourceFileTime > $minifiedFileTime)
-				    {
-					$this->deploy('css');
+					$this->deployCss($tableCss, $this->config->dirCss);
 					break;
-				    }
 				}
-				break;
+			}
+			break;
 		}
 	}
 
