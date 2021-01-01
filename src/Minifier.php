@@ -67,13 +67,6 @@ class Minifier
             throw MinifierException::forWrongFileExtension($ext);
         }
 
-        $versions = $this->getVersion($this->config->dirVersion);
-
-        if (empty($versions))
-        {
-            throw MinifierException::forNoVersioningFile();
-        }
-
         if (! in_array($this->config->returnType, ['html', 'array', 'json']))
         {
             throw MinifierException::forWrongReturnType($this->config->returnType);
@@ -83,6 +76,9 @@ class Minifier
         {
             $this->autoDeployCheck($filename, $ext);
         }
+
+        // load versions
+        $versions = $this->getVersion($this->config->dirVersion);
 
         $filenames = [];
 

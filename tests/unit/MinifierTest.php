@@ -9,6 +9,11 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
     protected $minifier;
 
+    protected $ver = [
+        'js'  => '9ef881911da8d7c4a1c2f19c4878d122',
+        'css' => '95cb11cf55b3f1164e80ae9393644ae3'
+    ];
+
     public function setUp(): void
     {
         parent::setUp();
@@ -22,6 +27,15 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $this->config->js = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']];
         $this->config->css = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']];
 
+        if (file_exists($this->config->dirJs . '/new.js'))
+        {
+            unlink($this->config->dirJs . '/new.js');
+        }
+
+        if (file_exists($this->config->dirCss . '/new.css'))
+        {
+            unlink($this->config->dirCss . '/new.css');
+        }
 
 /*
         if (file_exists($this->config->dirJs . '/all.min.js'))
@@ -120,7 +134,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.js');
 
-        $this->assertEquals('<script type="text/javascript" src="http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122"></script>' . PHP_EOL, $result);
+        $this->assertEquals('<script type="text/javascript" src="http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=' . $this->ver['js'] . '"></script>' . PHP_EOL, $result);
     }
 
     public function testLoadCss()
@@ -129,7 +143,8 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.css');
 
-        $this->assertEquals('<link rel="stylesheet" href="http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=50a35b0b1d1c3798aa556b8245314930">' . PHP_EOL, $result);
+        $this->assertEquals('<link rel="stylesheet" href="http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=' . $this->ver['css'] . '">' . PHP_EOL, $result);
+
     }
 
     public function testLoadJsWithBaseJsUrl()
@@ -140,7 +155,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.js');
 
-        $this->assertEquals('<script type="text/javascript" src="http://js.localhost/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122"></script>' . PHP_EOL, $result);
+        $this->assertEquals('<script type="text/javascript" src="http://js.localhost/all.min.js?v=' . $this->ver['js'] . '"></script>' . PHP_EOL, $result);
     }
 
     public function testLoadCssWithBaseCssUrl()
@@ -151,7 +166,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.css');
 
-        $this->assertEquals('<link rel="stylesheet" href="http://css.localhost/all.min.css?v=50a35b0b1d1c3798aa556b8245314930">' . PHP_EOL, $result);
+        $this->assertEquals('<link rel="stylesheet" href="http://css.localhost/all.min.css?v=' . $this->ver['css'] . '">' . PHP_EOL, $result);
     }
 
     public function testJsonReturnTypeWithLoadJs()
@@ -161,7 +176,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.js');
 
-        $this->assertEquals(json_encode(['http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122']), $result);
+        $this->assertEquals(json_encode(['http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=' . $this->ver['js']]), $result);
     }
 
     public function testJsonReturnTypeWithLoadCss()
@@ -171,7 +186,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.css');
 
-        $this->assertEquals(json_encode(['http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=50a35b0b1d1c3798aa556b8245314930']), $result);
+        $this->assertEquals(json_encode(['http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=' . $this->ver['css']]), $result);
     }
 
     public function testArrayReturnTypeWithLoadJs()
@@ -181,7 +196,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.js');
 
-        $this->assertEquals(['http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122'], $result);
+        $this->assertEquals(['http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=' . $this->ver['js']], $result);
     }
 
     public function testArrayReturnTypeWithLoadCss()
@@ -191,7 +206,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
         $result = $this->minifier->load('all.min.css');
 
-        $this->assertEquals(['http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=50a35b0b1d1c3798aa556b8245314930'], $result);
+        $this->assertEquals(['http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=' . $this->ver['css']], $result);
     }
 
     public function testLoadExceptionForWrongReturnType()
@@ -222,11 +237,12 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $this->config->js = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js', 'new.js']];
         $this->minifier = new Minifier($this->config);
 
+        sleep(1);
+        file_put_contents($this->config->dirJs . '/new.js', '//data;');
+
         $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckJs');
 
-        file_put_contents($this->config->dirJs . '/new.js', '//data;');
         $this->assertTrue($method('all.min.js'));
-        unlink($this->config->dirJs . '/new.js');
     }
 
     public function testAutoDeployOnChangeCssFalse()
@@ -246,11 +262,12 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $this->config->css = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css', 'new.css']];
         $this->minifier = new Minifier($this->config);
 
+        sleep(1);
+        file_put_contents($this->config->dirCss . '/new.css', '//data;');
+
         $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckCss');
 
-        file_put_contents($this->config->dirCss . '/new.css', '//data;');
         $this->assertTrue($method('all.min.css'));
-        unlink($this->config->dirCss . '/new.css');
     }
 
 }
