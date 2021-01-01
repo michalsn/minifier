@@ -104,6 +104,14 @@ class Minifier extends BaseConfig
     public $returnType = 'html';
 
     //--------------------------------------------------------------------
+    // Enable auto deploy on change
+    //--------------------------------------------------------------------
+    // Use this variable to automatically deploy when there are any
+    // changes in assets files.
+
+    public $autoDeployOnChange = false;
+
+    //--------------------------------------------------------------------
     // JS files config
     //--------------------------------------------------------------------
     // This array defines files to minify.

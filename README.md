@@ -108,6 +108,7 @@ Variable | Default value | Options | Desctiption
 `$tagJs` | `<script type="text/javascript" src="%s"></script>` | | JS tag to use in HTML when displaying JS assets.
 `$tagCss` | `<link rel="stylesheet" href="%s">` | | CSS tag to use in HTML when displaying CSS assets.
 `$returnType` | `html` | `html`, `json`, `array` | Determines how the files will be returned. The dafault value is `html` and it uses the `$tagJs` and `$tagCss` variables. Using `array` will return the php array and `json` type will return a json string.
+`$autoDeployOnChange` | `false` | `true`, `false` | Specifies if we want to automatically deploy whenever there is a change to any of our assets files. Keep in mind that enabling this feature will have an impact on performance.
 `$js` | | | This array defines JS files to minify.
 `$css` | | | This array defines CSS files to minify.
 

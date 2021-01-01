@@ -205,4 +205,52 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
        $this->minifier->load('all.min.css');
     }
 
+    public function testAutoDeployOnChangeJsFalse()
+    {
+        $this->config->autoDeployOnChange = true;
+        $this->config->js = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']];
+        $this->minifier = new Minifier($this->config);
+
+        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckJs');
+
+        $this->assertFalse($method('all.min.js'));
+    }
+
+    public function testAutoDeployOnChangeJsTrue()
+    {
+        $this->config->autoDeployOnChange = true;
+        $this->config->js = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js', 'new.js']];
+        $this->minifier = new Minifier($this->config);
+
+        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckJs');
+
+        file_put_contents($this->config->dirJs . '/new.js', '//data;');
+        $this->assertTrue($method('all.min.js'));
+        unlink($this->config->dirJs . '/new.js');
+    }
+
+    public function testAutoDeployOnChangeCssFalse()
+    {
+        $this->config->autoDeployOnChange = true;
+        $this->config->css = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']];
+        $this->minifier = new Minifier($this->config);
+
+        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckCss');
+
+        $this->assertFalse($method('all.min.css'));
+    }
+
+    public function testAutoDeployOnChangeCssTrue()
+    {
+        $this->config->autoDeployOnChange = true;
+        $this->config->css = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css', 'new.css']];
+        $this->minifier = new Minifier($this->config);
+
+        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckCss');
+
+        file_put_contents($this->config->dirCss . '/new.css', '//data;');
+        $this->assertTrue($method('all.min.css'));
+        unlink($this->config->dirCss . '/new.css');
+    }
+
 }

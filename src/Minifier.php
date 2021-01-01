@@ -79,6 +79,11 @@ class Minifier
             throw MinifierException::forWrongReturnType($this->config->returnType);
         }
 
+        if ($this->config->autoDeployOnChange)
+        {
+            $this->autoDeployCheck($filename, $ext);
+        }
+
         $filenames = [];
 
         // do we use combined+minified+versioned assets?
@@ -162,6 +167,105 @@ class Minifier
     public function getError(): string
     {
         return $this->error;
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Auto deploy check
+     *
+     * @param string $filename Filename
+     * @param string $ext      File extension
+     *
+     * @return void
+     */
+    protected function autoDeployCheck(string $filename, string $ext): void
+    {
+        switch ($ext)
+        {
+            case 'js':
+                $this->autoDeployCheckJs($filename);
+                break;
+            case 'css':
+                $this->autoDeployCheckCss($filename);
+                break;
+        }
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Auto deploy check for JS files
+     *
+     * @param string $filename Filename
+     *
+     * @return bool
+     */
+    protected function autoDeployCheckJs(string $filename): bool
+    {
+        $assets   = [$filename => $this->config->js[$filename]];
+        $filePath = $this->config->dirJs . '/' . $filename;
+
+        // if file is not deployed
+        if (! file_exists($filePath))
+        {
+            $this->deployJs($assets, $this->config->dirJs);
+            return true;
+        }
+
+        // get last deploy time
+        $lastDeployTime = filemtime($filePath);
+
+        // loop though the files and check last update time
+        foreach ($assets[$filename] as $file)
+        {
+            $currentFileTime = filemtime($this->config->dirJs . '/' . $file);
+            if ($currentFileTime > $lastDeployTime)
+            {
+                $this->deployJs($assets, $this->config->dirJs);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Auto deploy check for CSS files
+     *
+     * @param string $filename Filename
+     *
+     * @return bool
+     */
+    protected function autoDeployCheckCss(string $filename): bool
+    {
+        $assets   = [$filename => $this->config->css[$filename]];
+        $filePath = $this->config->dirCss . '/' . $filename;
+
+        // if file is not deployed
+        if (! file_exists($filePath))
+        {
+            $this->deployCss($assets, $this->config->dirCss);
+            return true;
+        }
+
+        // get last deploy time
+        $lastDeployTime = filemtime($filePath);
+
+        // loop though the files and check last update time
+        foreach ($assets[$filename] as $file)
+        {
+            $currentFileTime = filemtime($this->config->dirCss . '/' . $file);
+            if ($currentFileTime > $lastDeployTime)
+            {
+                $this->deployCss($assets, $this->config->dirCss);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //--------------------------------------------------------------------

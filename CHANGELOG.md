@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-01-01
+### Added
+- New config variable `$autoDeployOnChange` that specifies if we want to make a deploy automatically whenever any change happens to our assets files. Thanks to [@paul45](https://github.com/paul45) for inspiration.
+
 ## [1.1.0] - 2020-04-23
 ### Added
 - New config variable `$returnType` that specifies if we want to get `html` (default), `json` or php `array` as a result when we load a file to display.
