@@ -130,14 +130,14 @@ class Minifier
             switch ($mode)
             {
                 case 'js':
-                    $files = $this->deployJs($this->config->js, $this->config->dirJs);
+                    $files = $this->deployJs($this->config->js, $this->config->dirJs, $this->config->dirMinJs);
                     break;
                 case 'css':
-                    $files = $this->deployCss($this->config->css, $this->config->dirCss);
+                    $files = $this->deployCss($this->config->css, $this->config->dirCss, $this->config->dirMinCss);
                     break;
                 default:
-                    $files['js']  = $this->deployJs($this->config->js, $this->config->dirJs);
-                    $files['css'] = $this->deployCss($this->config->css, $this->config->dirCss);
+                    $files['js']  = $this->deployJs($this->config->js, $this->config->dirJs, $this->config->dirMinJs);
+                    $files['css'] = $this->deployCss($this->config->css, $this->config->dirCss, $this->config->dirMinCss);
             }
 
             $this->setVersion($mode, $files, $this->config->dirVersion);
@@ -205,7 +205,7 @@ class Minifier
         // if file is not deployed
         if (! file_exists($filePath))
         {
-            $this->deployJs($assets, $this->config->dirJs);
+            $this->deployJs($assets, $this->config->dirJs, $this->config->dirMinJs);
             return true;
         }
 
@@ -218,7 +218,7 @@ class Minifier
             $currentFileTime = filemtime($this->config->dirJs . '/' . $file);
             if ($currentFileTime > $lastDeployTime)
             {
-                $this->deployJs($assets, $this->config->dirJs);
+                $this->deployJs($assets, $this->config->dirJs, $this->config->dirMinJs);
                 return true;
             }
         }
@@ -243,7 +243,7 @@ class Minifier
         // if file is not deployed
         if (! file_exists($filePath))
         {
-            $this->deployCss($assets, $this->config->dirCss);
+            $this->deployCss($assets, $this->config->dirCss, $this->config->dirMinCss);
             return true;
         }
 
@@ -256,7 +256,7 @@ class Minifier
             $currentFileTime = filemtime($this->config->dirCss . '/' . $file);
             if ($currentFileTime > $lastDeployTime)
             {
-                $this->deployCss($assets, $this->config->dirCss);
+                $this->deployCss($assets, $this->config->dirCss, $this->config->dirMinCss);
                 return true;
             }
         }
@@ -286,7 +286,7 @@ class Minifier
         }
 
         // determine file folder
-        $dir = ($ext === 'js') ? $this->config->dirJs : $this->config->dirCss;
+        $dir = ($ext === 'js') ? $this->config->dirMinJs : $this->config->dirMinCss;
         $dir = ltrim(trim($dir, '/'), './');
 
         // add base url if needed
@@ -407,7 +407,7 @@ class Minifier
      *
      * @return array
      */
-    protected function deployJs(array $assets, string $dir): array
+    protected function deployJs(array $assets, string $dir, string $minDir): array
     {
         $dir = rtrim($dir, '/');
 
@@ -423,9 +423,9 @@ class Minifier
                 $miniJs->add($dir . '/' . $file);
             }
 
-            $miniJs->minify($dir . '/' . $asset);
+            $miniJs->minify($minDir . '/' . $asset);
 
-            $results[$asset] = md5_file($dir . '/' . $asset);
+            $results[$asset] = md5_file($minDir . '/' . $asset);
         }
 
         return $results;
@@ -441,7 +441,7 @@ class Minifier
      *
      * @return array
      */
-    protected function deployCss(array $assets, string $dir): array
+    protected function deployCss(array $assets, string $dir, string $minDir): array
     {
         $dir = rtrim($dir, '/');
 
@@ -457,9 +457,9 @@ class Minifier
                 $miniCss->add($dir . '/' . $file);
             }
 
-            $miniCss->minify($dir . '/' . $asset);
+            $miniCss->minify($minDir . '/' . $asset);
 
-            $results[$asset] = md5_file($dir . '/' . $asset);
+            $results[$asset] = md5_file($minDir . '/' . $asset);
         }
 
         return $results;
