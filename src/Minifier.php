@@ -411,6 +411,8 @@ class Minifier
     {
         $dir = rtrim($dir, '/');
 
+        $this->emptyFolder( $minDir );
+
         $class = $this->config->adapterJs;
 
         $results = [];
@@ -420,12 +422,25 @@ class Minifier
             $miniJs = new $class();
             foreach ($files as $file)
             {
-                $miniJs->add($dir . '/' . $file);
+                if ($this->config->minify)
+                {
+                    $miniJs->add($dir . DIRECTORY_SEPARATOR . $file);
+
+                }else{
+
+                    if ($dir !== $minDir)
+                    {
+                        $this->copyFile( $dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file );
+                        $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
+                    }
+                }
             }
 
-            $miniJs->minify($minDir . '/' . $asset);
-
-            $results[$asset] = md5_file($minDir . '/' . $asset);
+            if ($this->config->minify)
+            {
+                $miniJs->minify($minDir . DIRECTORY_SEPARATOR . $asset);
+                $results[$asset] = md5_file($minDir . DIRECTORY_SEPARATOR . $asset);
+            }
         }
 
         return $results;
@@ -445,6 +460,14 @@ class Minifier
     {
         $dir = rtrim($dir, '/');
 
+        $this->emptyFolder( $minDir );
+
+        $path = pathinfo($minDir);
+        if (!file_exists($path['dirname']))
+        {
+            mkdir($path['dirname'], 0777, true);
+        }
+
         $class = $this->config->adapterCss;
 
         $results = [];
@@ -454,16 +477,76 @@ class Minifier
             $miniCss = new $class();
             foreach ($files as $file)
             {
-                $miniCss->add($dir . '/' . $file);
+                if ($this->config->minify)
+                {
+                    $miniCss->add($dir . DIRECTORY_SEPARATOR . $file);
+                }else{
+
+                    if ($dir !== $minDir)
+                    {
+                        $this->copyFile( $dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file );
+                        $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
+                    }
+                }
             }
 
-            $miniCss->minify($minDir . '/' . $asset);
-
-            $results[$asset] = md5_file($minDir . '/' . $asset);
+            if ($this->config->minify)
+            {
+                $miniCss->minify($minDir . DIRECTORY_SEPARATOR . $asset);
+                $results[$asset] = md5_file($minDir . DIRECTORY_SEPARATOR . $asset);
+            }
         }
 
         return $results;
     }
 
     //--------------------------------------------------------------------
+
+    /**
+     * Copy File
+     *
+     * @param string  $dir Directory
+     * @param string $minDir    Directory
+     *
+     * @return void
+     */
+    protected function copyFile(string $dir, string $minDir) : void
+    {
+        $path = pathinfo($minDir);
+
+        if (!file_exists($path['dirname']))
+        {
+            mkdir($path['dirname'], 0777, true);
+        }
+
+        if (!copy($dir, $minDir))
+        {
+            throw MinifierException::forNoVersioningFile();
+        }
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Copy File
+     *
+     * @param string  $dir Directory
+     * @param string $minDir    Directory
+     *
+     * @return void
+     */
+    protected function emptyFolder(string $dir) : void
+    {
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+        
+        //rmdir($dir);
+    }
 }
