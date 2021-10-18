@@ -77,13 +77,13 @@ class Minifier extends BaseConfig
     // JS minified assets directory
     //--------------------------------------------------------------------
 
-    public $dirMinJs = './assets/js/public';
+    public $dirMinJs = './assets/js';
 
     //--------------------------------------------------------------------
     // CSS minified assets directory
     //--------------------------------------------------------------------
 
-    public $dirMinCss = './assets/css/public';
+    public $dirMinCss = './assets/css';
 
     //--------------------------------------------------------------------
     // Version assets directory
