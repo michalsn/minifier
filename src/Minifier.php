@@ -462,12 +462,6 @@ class Minifier
 
         $this->emptyFolder( $minDir );
 
-        $path = pathinfo($minDir);
-        if (!file_exists($path['dirname']))
-        {
-            mkdir($path['dirname'], 0777, true);
-        }
-
         $class = $this->config->adapterCss;
 
         $results = [];
