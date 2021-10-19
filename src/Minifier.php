@@ -130,14 +130,14 @@ class Minifier
             switch ($mode)
             {
                 case 'js':
-                    $files = $this->deployJs($this->config->js, $this->config->dirJs);
+                    $files = $this->deployJs($this->config->js, $this->config->dirJs, $this->config->dirMinJs);
                     break;
                 case 'css':
-                    $files = $this->deployCss($this->config->css, $this->config->dirCss);
+                    $files = $this->deployCss($this->config->css, $this->config->dirCss, $this->config->dirMinCss);
                     break;
                 default:
-                    $files['js']  = $this->deployJs($this->config->js, $this->config->dirJs);
-                    $files['css'] = $this->deployCss($this->config->css, $this->config->dirCss);
+                    $files['js']  = $this->deployJs($this->config->js, $this->config->dirJs, $this->config->dirMinJs);
+                    $files['css'] = $this->deployCss($this->config->css, $this->config->dirCss, $this->config->dirMinCss);
             }
 
             $this->setVersion($mode, $files, $this->config->dirVersion);
@@ -205,7 +205,7 @@ class Minifier
         // if file is not deployed
         if (! file_exists($filePath))
         {
-            $this->deployJs($assets, $this->config->dirJs);
+            $this->deployJs($assets, $this->config->dirJs, $this->config->dirMinJs);
             return true;
         }
 
@@ -218,7 +218,7 @@ class Minifier
             $currentFileTime = filemtime($this->config->dirJs . '/' . $file);
             if ($currentFileTime > $lastDeployTime)
             {
-                $this->deployJs($assets, $this->config->dirJs);
+                $this->deployJs($assets, $this->config->dirJs, $this->config->dirMinJs);
                 return true;
             }
         }
@@ -243,7 +243,7 @@ class Minifier
         // if file is not deployed
         if (! file_exists($filePath))
         {
-            $this->deployCss($assets, $this->config->dirCss);
+            $this->deployCss($assets, $this->config->dirCss, $this->config->dirMinCss);
             return true;
         }
 
@@ -256,7 +256,7 @@ class Minifier
             $currentFileTime = filemtime($this->config->dirCss . '/' . $file);
             if ($currentFileTime > $lastDeployTime)
             {
-                $this->deployCss($assets, $this->config->dirCss);
+                $this->deployCss($assets, $this->config->dirCss, $this->config->dirMinCss);
                 return true;
             }
         }
@@ -286,7 +286,7 @@ class Minifier
         }
 
         // determine file folder
-        $dir = ($ext === 'js') ? $this->config->dirJs : $this->config->dirCss;
+        $dir = ($ext === 'js') ? $this->config->dirMinJs : $this->config->dirMinCss;
         $dir = ltrim(trim($dir, '/'), './');
 
         // add base url if needed
@@ -407,9 +407,14 @@ class Minifier
      *
      * @return array
      */
-    protected function deployJs(array $assets, string $dir): array
+    protected function deployJs(array $assets, string $dir, string $minDir): array
     {
         $dir = rtrim($dir, '/');
+
+        if( $dir !== $minDir )
+        {
+            $this->emptyFolder( $minDir );
+        }
 
         $class = $this->config->adapterJs;
 
@@ -420,12 +425,25 @@ class Minifier
             $miniJs = new $class();
             foreach ($files as $file)
             {
-                $miniJs->add($dir . '/' . $file);
+                if ($this->config->minify)
+                {
+                    $miniJs->add($dir . DIRECTORY_SEPARATOR . $file);
+
+                }else{
+
+                    if ($dir !== $minDir)
+                    {
+                        $this->copyFile( $dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file );
+                        $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
+                    }
+                }
             }
 
-            $miniJs->minify($dir . '/' . $asset);
-
-            $results[$asset] = md5_file($dir . '/' . $asset);
+            if ($this->config->minify)
+            {
+                $miniJs->minify($minDir . DIRECTORY_SEPARATOR . $asset);
+                $results[$asset] = md5_file($minDir . DIRECTORY_SEPARATOR . $asset);
+            }
         }
 
         return $results;
@@ -441,9 +459,14 @@ class Minifier
      *
      * @return array
      */
-    protected function deployCss(array $assets, string $dir): array
+    protected function deployCss(array $assets, string $dir, string $minDir): array
     {
         $dir = rtrim($dir, '/');
+
+        if( $dir !== $minDir )
+        {
+            $this->emptyFolder( $minDir );
+        }
 
         $class = $this->config->adapterCss;
 
@@ -454,16 +477,76 @@ class Minifier
             $miniCss = new $class();
             foreach ($files as $file)
             {
-                $miniCss->add($dir . '/' . $file);
+                if ($this->config->minify)
+                {
+                    $miniCss->add($dir . DIRECTORY_SEPARATOR . $file);
+                }else{
+
+                    if ($dir !== $minDir)
+                    {
+                        $this->copyFile( $dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file );
+                        $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
+                    }
+                }
             }
 
-            $miniCss->minify($dir . '/' . $asset);
-
-            $results[$asset] = md5_file($dir . '/' . $asset);
+            if ($this->config->minify)
+            {
+                $miniCss->minify($minDir . DIRECTORY_SEPARATOR . $asset);
+                $results[$asset] = md5_file($minDir . DIRECTORY_SEPARATOR . $asset);
+            }
         }
 
         return $results;
     }
 
     //--------------------------------------------------------------------
+
+    /**
+     * Copy File
+     *
+     * @param string  $dir Directory
+     * @param string $minDir    Directory
+     *
+     * @return void
+     */
+    protected function copyFile(string $dir, string $minDir) : void
+    {
+        $path = pathinfo($minDir);
+
+        if (!file_exists($path['dirname']))
+        {
+            mkdir($path['dirname'], 0777, true);
+        }
+
+        if (!copy($dir, $minDir))
+        {
+            throw MinifierException::forNoVersioningFile();
+        }
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Copy File
+     *
+     * @param string  $dir Directory
+     * @param string $minDir    Directory
+     *
+     * @return void
+     */
+    protected function emptyFolder(string $dir) : void
+    {
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+        
+        //rmdir($dir);
+    }
 }
