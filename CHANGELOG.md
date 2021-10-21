@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2021-10-21
+### Added
+- New config variables `$dirMinJs` and `$dirMinCss` that allow to specify separate directories for minified assets - by [@daycry](https://github.com/daycry)
+
 ## [1.2.0] - 2021-01-01
 ### Added
 - New config variable `$autoDeployOnChange` that specifies if we want to make a deploy automatically whenever any change happens to our assets files. Thanks to [@paul45](https://github.com/paul45) for inspiration.

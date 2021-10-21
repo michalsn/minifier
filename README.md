@@ -2,23 +2,10 @@
 
 Asset minification and versioning library for CodeIgniter 4.
 
-## Installation via composer
+## Installation
 
     > composer require michalsn/minifier
 
-## Manual installation
-
-Download this repo and then enable it by editing **app/Config/Autoload.php** and adding the **Michalsn\Minifier**
-namespace to the **$psr4** array. For example, if you copied it into **app/ThirdParty**:
-
-```php
-$psr4 = [
-    'Config'      => APPPATH . 'Config',
-    APP_NAMESPACE => APPPATH,
-    'App'         => APPPATH,
-    'Michalsn\Minifier' => APPPATH . 'ThirdParty/minifier/src',
-];
-```
 ## Configuration
 
 Run command:
@@ -26,7 +13,7 @@ Run command:
     > php spark minify:publish
 
 This command will copy a config file to your app namespace.
-Then you can adjust it to your needs. By default file will be present in `app/Config/Minifier.php`.
+Then you can adjust it to your needs. By default, file will be present in `app/Config/Minifier.php`.
 
 You should define an array of files that you want to minify, ie:
 
@@ -104,8 +91,8 @@ Variable | Default value | Options | Desctiption
 `$adapterCss` | `\Michalsn\Minifier\Adapters\Css\MinifyAdapter::class` | | Adapter to use for minifying CSS files. You can also implement your own CSS adapter to minify assets and replace this class.
 `$dirJs` | `./assets/js` | | JS assets directory.
 `$dirCss` | `./assets/css` | | CSS assets directory.
-`$dirMinJs` | `null` | | Minified JS Asset Directory.
-`$dirMinCss` | `null` | | Minified CSS Asset Directory.
+`$dirMinJs` | `null` | | Minified JS asset directory. If not set the value from `$dirJs` will be used instead.
+`$dirMinCss` | `null` | | Minified CSS asset directory. If not set the value from `$dirCss` will be used instead.
 `$dirVersion` | `./assets` | | Directory to store assets versioning.
 `$tagJs` | `<script type="text/javascript" src="%s"></script>` | | JS tag to use in HTML when displaying JS assets.
 `$tagCss` | `<link rel="stylesheet" href="%s">` | | CSS tag to use in HTML when displaying CSS assets.
