@@ -104,6 +104,8 @@ Variable | Default value | Options | Desctiption
 `$adapterCss` | `\Michalsn\Minifier\Adapters\Css\MinifyAdapter::class` | | Adapter to use for minifying CSS files. You can also implement your own CSS adapter to minify assets and replace this class.
 `$dirJs` | `./assets/js` | | JS assets directory.
 `$dirCss` | `./assets/css` | | CSS assets directory.
+`$dirMinJs` | `null` | | Minified JS Asset Directory.
+`$dirMinCss` | `null` | | Minified CSS Asset Directory.
 `$dirVersion` | `./assets` | | Directory to store assets versioning.
 `$tagJs` | `<script type="text/javascript" src="%s"></script>` | | JS tag to use in HTML when displaying JS assets.
 `$tagCss` | `<link rel="stylesheet" href="%s">` | | CSS tag to use in HTML when displaying CSS assets.
