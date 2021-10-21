@@ -21,4 +21,9 @@ class MinifierException extends \RuntimeException implements ExceptionInterface
     {
         return new self(lang('Minifier.wrongReturnType', [$type]));
     }
+
+    public static function forFileCopyError(string $file1, string $file2)
+    {
+        return new self(lang('Minifier.fileCopyError'. [$file1, $file2]));
+    }
 }

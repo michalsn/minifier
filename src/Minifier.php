@@ -1,5 +1,6 @@
 <?php namespace Michalsn\Minifier;
 
+use Exception;
 use Michalsn\Minifier\Exceptions\MinifierException;
 
 class Minifier
@@ -414,11 +415,10 @@ class Minifier
         if ($minDir === null)
         {
             $minDir = $dir;
-        }else{
-            if ($dir !== $minDir)
-            {
-                $this->emptyFolder($minDir);
-            }
+        }
+        elseif ($dir !== $minDir)
+        {
+            $this->emptyFolder($minDir);
         }
 
         $class = $this->config->adapterJs;
@@ -433,14 +433,11 @@ class Minifier
                 if ($this->config->minify)
                 {
                     $miniJs->add($dir . DIRECTORY_SEPARATOR . $file);
-
-                }else{
-
-                    if ($dir !== $minDir)
-                    {
-                        $this->copyFile($dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file);
-                        $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
-                    }
+                }
+                elseif ($dir !== $minDir)
+                {
+                    $this->copyFile($dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file);
+                    $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
                 }
             }
 
@@ -471,11 +468,10 @@ class Minifier
         if ($minDir === null)
         {
             $minDir = $dir;
-        }else{
-            if ($dir !== $minDir)
-            {
-                $this->emptyFolder($minDir);
-            }
+        }
+        elseif ($dir !== $minDir)
+        {
+            $this->emptyFolder($minDir);
         }
 
         $class = $this->config->adapterCss;
@@ -490,13 +486,11 @@ class Minifier
                 if ($this->config->minify)
                 {
                     $miniCss->add($dir . DIRECTORY_SEPARATOR . $file);
-                }else{
-
-                    if ($dir !== $minDir)
-                    {
-                        $this->copyFile($dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file);
-                        $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
-                    }
+                }
+                elseif ($dir !== $minDir)
+                {
+                    $this->copyFile($dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file);
+                    $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
                 }
             }
 
@@ -515,23 +509,23 @@ class Minifier
     /**
      * Copy File
      *
-     * @param string  $dir Directory
-     * @param string $minDir    Directory
+     * @param string $dir    Directory
+     * @param string $minDir Minified directory
      *
      * @return void
      */
-    protected function copyFile(string $dir, string $minDir) : void
+    protected function copyFile(string $dir, string $minDir): void
     {
         $path = pathinfo($minDir);
 
         if (! file_exists($path['dirname']))
         {
-            mkdir($path['dirname'], 0777, true);
+            mkdir($path['dirname'], 0755, true);
         }
 
         if (! copy($dir, $minDir))
         {
-            throw MinifierException::forNoVersioningFile();
+            throw MinifierException::forFileCopyError($dir, $minDir);
         }
     }
 
@@ -540,21 +534,20 @@ class Minifier
     /**
      * Copy File
      *
-     * @param string  $dir Directory
-     * @param string $minDir    Directory
+     * @param string $dir Directory
      *
      * @return void
      */
-    protected function emptyFolder(string $dir) : void
+    protected function emptyFolder(string $dir): void
     {
         $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::CHILD_FIRST
         );
 
-        foreach ($files as $fileinfo) {
-            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-            $todo($fileinfo->getRealPath());
+        foreach ($files as $fileInfo) {
+            $todo = ($fileInfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileInfo->getRealPath());
         }
     }
 }

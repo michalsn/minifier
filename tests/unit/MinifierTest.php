@@ -38,18 +38,7 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         {
             unlink($this->config->dirCss . '/new.css');
         }
-
 /*
-        if (file_exists($this->config->dirJs . '/all.min.js'))
-        {
-            unlink($this->config->dirJs . '/all.min.js');
-        }
-
-        if (file_exists($this->config->dirCss . '/all.min.css'))
-        {
-            unlink($this->config->dirCss . '/all.min.css');
-        }
-
         if (file_exists($this->config->dirVersion . '/versions.js'))
         {
             unlink($this->config->dirVersion . '/versions.js');
@@ -110,6 +99,8 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $result = $this->minifier->deploy('js');
 
         $this->assertTrue($result);
+
+        $this->assertTrue(file_exists($this->config->dirJs . DIRECTORY_SEPARATOR .  array_key_first($this->config->js)));
     }
 
     public function testDeployCss()
@@ -119,6 +110,8 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $result = $this->minifier->deploy('css');
 
         $this->assertTrue($result);
+
+        $this->assertTrue(file_exists($this->config->dirCss . DIRECTORY_SEPARATOR .  array_key_first($this->config->css)));
     }
 
     public function testDeployAll()
@@ -128,7 +121,12 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $result = $this->minifier->deploy('all');
 
         $this->assertTrue($result);
+
+        $this->assertTrue(file_exists($this->config->dirJs . DIRECTORY_SEPARATOR .  array_key_first($this->config->js)));
+        $this->assertTrue(file_exists($this->config->dirCss . DIRECTORY_SEPARATOR .  array_key_first($this->config->css)));
     }
+
+
 
     public function testLoadJs()
     {
@@ -146,7 +144,26 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $result = $this->minifier->load('all.min.css');
 
         $this->assertEquals('<link rel="stylesheet" href="http://localhost' . SUPPORTPATH . 'assets/css/all.min.css?v=' . $this->ver['css'] . '">' . PHP_EOL, $result);
+    }
 
+    public function testLoadJsWithDirMinJs()
+    {
+        $this->config->dirMinJs = SUPPORTPATH . 'public/js';
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->load('all.min.js');
+
+        $this->assertEquals('<script type="text/javascript" src="http://localhost' . SUPPORTPATH . 'public/js/all.min.js?v=' . $this->ver['js'] . '"></script>' . PHP_EOL, $result);
+    }
+
+    public function testLoadCssWithDirMinCss()
+    {
+        $this->config->dirMinCss = SUPPORTPATH . 'public/css';
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->load('all.min.css');
+
+        $this->assertEquals('<link rel="stylesheet" href="http://localhost' . SUPPORTPATH . 'public/css/all.min.css?v=' . $this->ver['css'] . '">' . PHP_EOL, $result);
     }
 
     public function testLoadJsWithBaseJsUrl()
@@ -163,6 +180,30 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
     public function testLoadCssWithBaseCssUrl()
     {
         $this->config->baseCssUrl = 'http://css.localhost/';
+
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->load('all.min.css');
+
+        $this->assertEquals('<link rel="stylesheet" href="http://css.localhost/all.min.css?v=' . $this->ver['css'] . '">' . PHP_EOL, $result);
+    }
+
+    public function testLoadJsWithBaseJsUrlAndDirMinJs()
+    {
+        $this->config->baseJsUrl = 'http://js.localhost/';
+        $this->config->dirMinJs = SUPPORTPATH . 'public/js';
+
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->load('all.min.js');
+
+        $this->assertEquals('<script type="text/javascript" src="http://js.localhost/all.min.js?v=' . $this->ver['js'] . '"></script>' . PHP_EOL, $result);
+    }
+
+    public function testLoadCssWithBaseCssUrlAndDirMinCss()
+    {
+        $this->config->baseCssUrl = 'http://css.localhost/';
+        $this->config->dirMinCss = SUPPORTPATH . 'public/css';
 
         $this->minifier = new Minifier($this->config);
 
@@ -272,4 +313,61 @@ class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
         $this->assertTrue($method('all.min.css'));
     }
 
+    public function testDeployJsWithDirMinJs()
+    {
+        if (file_exists($this->config->dirMinJs . '/all.min.js'))
+        {
+            unlink($this->config->dirMinJs . '/all.min.js');
+        }
+
+        $this->config->dirMinJs = SUPPORTPATH . 'public/js';
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->deploy('js');
+
+        $this->assertTrue($result);
+
+        $this->assertTrue(file_exists($this->config->dirMinJs . DIRECTORY_SEPARATOR .  array_key_first($this->config->js)));
+    }
+
+    public function testDeployCssWithDirMinCss()
+    {
+        if (file_exists($this->config->dirMinCss . '/all.min.css'))
+        {
+            unlink($this->config->dirMinCss . '/all.min.css');
+        }
+
+        $this->config->dirMinCss = SUPPORTPATH . 'public/css';
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->deploy('css');
+
+        $this->assertTrue($result);
+
+        $this->assertTrue(file_exists($this->config->dirMinCss . DIRECTORY_SEPARATOR .  array_key_first($this->config->css)));
+    }
+
+    public function testDeployAllWithDirMinJsAndCss()
+    {
+        if (file_exists($this->config->dirMinJs . '/all.min.js'))
+        {
+            unlink($this->config->dirMinJs . '/all.min.js');
+        }
+
+        if (file_exists($this->config->dirMinCss . '/all.min.css'))
+        {
+            unlink($this->config->dirMinCss . '/all.min.css');
+        }
+
+        $this->config->dirMinJs = SUPPORTPATH . 'public/js';
+        $this->config->dirMinCss = SUPPORTPATH . 'public/css';
+        $this->minifier = new Minifier($this->config);
+
+        $result = $this->minifier->deploy('all');
+
+        $this->assertTrue($result);
+
+        $this->assertTrue(file_exists($this->config->dirMinJs . DIRECTORY_SEPARATOR .  array_key_first($this->config->js)));
+        $this->assertTrue(file_exists($this->config->dirMinCss . DIRECTORY_SEPARATOR .  array_key_first($this->config->css)));
+    }
 }
