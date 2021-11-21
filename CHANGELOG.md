@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.4.0] - 2021-11-21
+### Fixed
+- [#7](https://github.com/michalsn/minifier/issues/7) - The logic around the `emptyFolder()` method could be problematic in some cases, so it was removed entirely.
+### Changed
+- Method `emptyFolder()` was deprecated.
+- Methods `deployJs()` and `deployCss()` were deprecated in favor of `deployFiles()`.
+- Methods `autoDeployCheckJs()`, `autoDeployCheckCss()` and `autoDeployCheck()` were deprecated in favor of `autoDeployCheckFile()`.
+
 ## [1.3.0] - 2021-10-21
 ### Added
 - New config variables `$dirMinJs` and `$dirMinCss` that allow to specify separate directories for minified assets - by [@daycry](https://github.com/daycry)
@@ -25,4 +33,4 @@ All notable changes to this project will be documented in this file.
 - Fix the way `versions.json` file is set.
 
 ## [1.0.0] - 2020-03-27
-- Initial realease
+- Initial release
