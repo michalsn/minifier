@@ -29,7 +29,7 @@ class Minifier extends BaseConfig
     // Base JS URL for assets
     //--------------------------------------------------------------------
     // Use this variable when your JS assets are served from subdomain.
-    // Bare in mind that in this case variable $dirJs won't be added
+    // Bear in mind that in this case variable $dirJs won't be added
     // to the URL.
     //
     // Example value:
@@ -41,7 +41,7 @@ class Minifier extends BaseConfig
     // Base CSS URL for assets
     //--------------------------------------------------------------------
     // Use this variable when your CSS assets are served from subdomain.
-    // Bare in mind that in this case variable $dirCSS won't be added
+    // Bear in mind that in this case variable $dirCSS won't be added
     // to the URL.
     //
     // Example value:
@@ -110,7 +110,7 @@ class Minifier extends BaseConfig
     // 'html' and it uses the $tagJs and $tagCss variables. Using 'array'
     // will return the php array and 'json' type will return a json string.
     //
-    // Avaliable types:
+    // Available types:
     //      'html', 'array', 'json'
 
     public $returnType = 'html';

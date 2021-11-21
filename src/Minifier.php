@@ -1,6 +1,7 @@
 <?php namespace Michalsn\Minifier;
 
 use Exception;
+use Michalsn\Minifier\Config\Minifier as Config;
 use Michalsn\Minifier\Exceptions\MinifierException;
 
 class Minifier
@@ -8,7 +9,7 @@ class Minifier
     /**
      * Config object.
      *
-     * @var \Config\Minify
+     * @var Config
      */
     protected $config;
 
@@ -24,9 +25,9 @@ class Minifier
     /**
      * Prepare config to use
      *
-     * @param \Config\Minify $config
+     * @param Config $config
      */
-    public function __construct($config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
 
@@ -75,7 +76,7 @@ class Minifier
 
         if ($this->config->autoDeployOnChange)
         {
-            $this->autoDeployCheck($filename, $ext);
+            $this->autoDeployCheckFile($ext, $filename);
         }
 
         // load versions
@@ -131,14 +132,14 @@ class Minifier
             switch ($mode)
             {
                 case 'js':
-                    $files = $this->deployJs($this->config->js, $this->config->dirJs, $this->config->dirMinJs);
+                    $files = $this->deployFiles('js', $this->config->js, $this->config->dirJs, $this->config->dirMinJs);
                     break;
                 case 'css':
-                    $files = $this->deployCss($this->config->css, $this->config->dirCss, $this->config->dirMinCss);
+                    $files = $this->deployFiles('css', $this->config->css, $this->config->dirCss, $this->config->dirMinCss);
                     break;
                 default:
-                    $files['js']  = $this->deployJs($this->config->js, $this->config->dirJs, $this->config->dirMinJs);
-                    $files['css'] = $this->deployCss($this->config->css, $this->config->dirCss, $this->config->dirMinCss);
+                    $files['js']  = $this->deployFiles('js', $this->config->js, $this->config->dirJs, $this->config->dirMinJs);
+                    $files['css'] = $this->deployFiles('css', $this->config->css, $this->config->dirCss, $this->config->dirMinCss);
             }
 
             $this->setVersion($mode, $files, $this->config->dirVersion);
@@ -174,19 +175,13 @@ class Minifier
      * @param string $filename Filename
      * @param string $ext      File extension
      *
+     * @deprecated deprecated since version 1.4.0 - use autoDeployCheckFile() instead
+     *
      * @return void
      */
     protected function autoDeployCheck(string $filename, string $ext): void
     {
-        switch ($ext)
-        {
-            case 'js':
-                $this->autoDeployCheckJs($filename);
-                break;
-            case 'css':
-                $this->autoDeployCheckCss($filename);
-                break;
-        }
+        $this->autoDeployCheckFile($ext, $filename);
     }
 
     //--------------------------------------------------------------------
@@ -196,35 +191,13 @@ class Minifier
      *
      * @param string $filename Filename
      *
+     * @deprecated deprecated since version 1.4.0 - use autoDeployCheckFile() instead
+     *
      * @return bool
      */
     protected function autoDeployCheckJs(string $filename): bool
     {
-        $assets   = [$filename => $this->config->js[$filename]];
-        $filePath = $this->config->dirJs . '/' . $filename;
-
-        // if file is not deployed
-        if (! file_exists($filePath))
-        {
-            $this->deployJs($assets, $this->config->dirJs, $this->config->dirMinJs);
-            return true;
-        }
-
-        // get last deploy time
-        $lastDeployTime = filemtime($filePath);
-
-        // loop though the files and check last update time
-        foreach ($assets[$filename] as $file)
-        {
-            $currentFileTime = filemtime($this->config->dirJs . '/' . $file);
-            if ($currentFileTime > $lastDeployTime)
-            {
-                $this->deployJs($assets, $this->config->dirJs, $this->config->dirMinJs);
-                return true;
-            }
-        }
-
-        return false;
+        return $this->autoDeployCheckFile('js', $filename);
     }
 
     //--------------------------------------------------------------------
@@ -234,17 +207,37 @@ class Minifier
      *
      * @param string $filename Filename
      *
+     * @deprecated deprecated since version 1.4.0 - use autoDeployCheckFile() instead
+     *
      * @return bool
      */
     protected function autoDeployCheckCss(string $filename): bool
     {
-        $assets   = [$filename => $this->config->css[$filename]];
-        $filePath = $this->config->dirCss . '/' . $filename;
+        return $this->autoDeployCheckFile('css', $filename);
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Auto deploy check for CSS files
+     *
+     * @param string $fileType File type [css, js]
+     * @param string $filename Filename
+     *
+     * @return bool
+     */
+    protected function autoDeployCheckFile(string $fileType, string $filename): bool
+    {
+        $dir    = 'dir' . ucfirst(strtolower($fileType));
+        $dirMin = 'dirMin' . ucfirst(strtolower($fileType));
+
+        $assets   = [$filename => $this->config->$fileType[$filename]];
+        $filePath = $this->config->$dir . '/' . $filename;
 
         // if file is not deployed
         if (! file_exists($filePath))
         {
-            $this->deployCss($assets, $this->config->dirCss, $this->config->dirMinCss);
+            $this->deployFiles($fileType, $assets, $this->config->$dir, $this->config->$dirMin);
             return true;
         }
 
@@ -254,10 +247,10 @@ class Minifier
         // loop though the files and check last update time
         foreach ($assets[$filename] as $file)
         {
-            $currentFileTime = filemtime($this->config->dirCss . '/' . $file);
+            $currentFileTime = filemtime($this->config->$dir . '/' . $file);
             if ($currentFileTime > $lastDeployTime)
             {
-                $this->deployCss($assets, $this->config->dirCss, $this->config->dirMinCss);
+                $this->deployFiles($fileType, $assets, $this->config->$dir, $this->config->$dirMin);
                 return true;
             }
         }
@@ -297,7 +290,6 @@ class Minifier
         }
 
         return $dir;
-
     }
 
     //--------------------------------------------------------------------
@@ -375,9 +367,13 @@ class Minifier
     /**
      * Set version
      *
+     * @param string $mode  Mode
+     * @param array  $files Files
+     * @param string $dir   Directory
+     *
      * @return void
      */
-    protected function setVersion($mode, $files, $dir): void
+    protected function setVersion(string $mode, array $files, string $dir): void
     {
         $dir = rtrim($dir, '/');
 
@@ -403,52 +399,17 @@ class Minifier
     /**
      * Deploy JS
      *
-     * @param array  $assets JS assets
-     * @param string $dir    Directory
+     * @param array       $assets JS assets
+     * @param string      $dir    Directory
+     * @param string|null $minDir Minified directory
+     *
+     * @deprecated deprecated since version 1.4.0 - use deployFiles() instead
      *
      * @return array
      */
     protected function deployJs(array $assets, string $dir, string $minDir = null): array
     {
-        $dir = rtrim($dir, '/');
-
-        if ($minDir === null)
-        {
-            $minDir = $dir;
-        }
-        elseif ($dir !== $minDir)
-        {
-            $this->emptyFolder($minDir);
-        }
-
-        $class = $this->config->adapterJs;
-
-        $results = [];
-
-        foreach ($assets as $asset => $files)
-        {
-            $miniJs = new $class();
-            foreach ($files as $file)
-            {
-                if ($this->config->minify)
-                {
-                    $miniJs->add($dir . DIRECTORY_SEPARATOR . $file);
-                }
-                elseif ($dir !== $minDir)
-                {
-                    $this->copyFile($dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file);
-                    $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
-                }
-            }
-
-            if ($this->config->minify)
-            {
-                $miniJs->minify($minDir . DIRECTORY_SEPARATOR . $asset);
-                $results[$asset] = md5_file($minDir . DIRECTORY_SEPARATOR . $asset);
-            }
-        }
-
-        return $results;
+        return $this->deployFiles('js', $assets, $dir, $minDir);
     }
 
     //--------------------------------------------------------------------
@@ -456,25 +417,43 @@ class Minifier
     /**
      * Deploy CSS
      *
-     * @param array  $assets CSS assets
-     * @param string $dir    Directory
+     * @param array       $assets CSS assets
+     * @param string      $dir    Directory
+     * @param string|null $minDir Minified directory
+     *
+     * @deprecated deprecated since version 1.4.0 - use deployFiles() instead
      *
      * @return array
      */
-    protected function deployCss(array $assets, string $dir, string $minDir): array
+    protected function deployCss(array $assets, string $dir, string $minDir = null): array
     {
+        return $this->deployFiles('css', $assets, $dir, $minDir);
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Deploy files
+     *
+     * @param string      $fileType File type [css, js]
+     * @param array       $assets   CSS assets
+     * @param string      $dir      Directory
+     * @param string|null $minDir   Minified directory
+     *
+     * @return array
+     */
+    protected function deployFiles(string $fileType, array $assets, string $dir, string $minDir = null): array
+    {
+        $adapterType = 'adapter' . ucfirst(strtolower($fileType));
+
         $dir = rtrim($dir, '/');
 
         if ($minDir === null)
         {
             $minDir = $dir;
         }
-        elseif ($dir !== $minDir)
-        {
-            $this->emptyFolder($minDir);
-        }
 
-        $class = $this->config->adapterCss;
+        $class = $this->config->$adapterType;
 
         $results = [];
 
@@ -535,6 +514,8 @@ class Minifier
      * Copy File
      *
      * @param string $dir Directory
+     *
+     * @deprecated deprecated since version 1.4.0
      *
      * @return void
      */
