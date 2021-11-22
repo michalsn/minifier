@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.4.1] - 2021-11-22
+### Fixed
+- Fixed an issue with `autoDeployOnChange` option, when `minDirJs` or `minDirCss` was set. Thanks to [@paul45](https://github.com/paul45)
+
 ## [1.4.0] - 2021-11-21
 ### Fixed
 - [#7](https://github.com/michalsn/minifier/issues/7) - The logic around the `emptyFolder()` method could be problematic in some cases, so it was removed entirely.
