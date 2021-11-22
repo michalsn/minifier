@@ -232,7 +232,7 @@ class Minifier
         $dirMin = 'dirMin' . ucfirst(strtolower($fileType));
 
         if ($this->config->$dirMin === null) {
-            $dirMin = $dir
+            $dirMin = $dir;
         }
         
         $assets   = [$filename => $this->config->$fileType[$filename]];
