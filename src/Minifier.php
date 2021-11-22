@@ -231,6 +231,10 @@ class Minifier
         $dir    = 'dir' . ucfirst(strtolower($fileType));
         $dirMin = 'dirMin' . ucfirst(strtolower($fileType));
 
+        if ($this->config->$dirMin === null) {
+            $dirMin = $dir
+        }
+        
         $assets   = [$filename => $this->config->$fileType[$filename]];
         $filePath = $this->config->$dirMin . '/' . $filename;
 
@@ -245,19 +249,14 @@ class Minifier
         $lastDeployTime = filemtime($filePath);
 
         // loop though the files and check last update time
-        $needDeploy = false;
         foreach ($assets[$filename] as $file)
         {
             $currentFileTime = filemtime($this->config->$dir . '/' . $file);
             if ($currentFileTime > $lastDeployTime)
             {
-                $needDeploy = true;
+                $this->deployFiles($fileType, $assets, $this->config->$dir, $this->config->$dirMin);
+                return true;
             }
-        }
-        if ($needDeploy) 
-        {
-            $this->deployFiles($fileType, $assets, $this->config->$dir, $this->config->$dirMin);
-            return true;
         }
         return false;
     }
