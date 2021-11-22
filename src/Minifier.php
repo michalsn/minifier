@@ -232,7 +232,7 @@ class Minifier
         $dirMin = 'dirMin' . ucfirst(strtolower($fileType));
 
         $assets   = [$filename => $this->config->$fileType[$filename]];
-        $filePath = $this->config->$dir . '/' . $filename;
+        $filePath = $this->config->$dirMin . '/' . $filename;
 
         // if file is not deployed
         if (! file_exists($filePath))
