@@ -231,8 +231,12 @@ class Minifier
         $dir    = 'dir' . ucfirst(strtolower($fileType));
         $dirMin = 'dirMin' . ucfirst(strtolower($fileType));
 
+        if ($this->config->$dirMin === null) {
+            $dirMin = $dir;
+        }
+        
         $assets   = [$filename => $this->config->$fileType[$filename]];
-        $filePath = $this->config->$dir . '/' . $filename;
+        $filePath = $this->config->$dirMin . '/' . $filename;
 
         // if file is not deployed
         if (! file_exists($filePath))
@@ -254,7 +258,6 @@ class Minifier
                 return true;
             }
         }
-
         return false;
     }
 
