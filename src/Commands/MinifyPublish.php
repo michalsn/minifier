@@ -1,8 +1,11 @@
-<?php namespace Michalsn\Minifier\Commands;
+<?php
 
-use Config\Autoload;
-use CodeIgniter\CLI\CLI;
+namespace Michalsn\Minifier\Commands;
+
 use CodeIgniter\CLI\BaseCommand;
+use CodeIgniter\CLI\CLI;
+use Config\Autoload;
+use Exception;
 
 class MinifyPublish extends BaseCommand
 {
@@ -17,22 +20,20 @@ class MinifyPublish extends BaseCommand
      */
     protected $sourcePath;
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     /**
      * Copy config file
-     *
-     * @param array $params
      */
     public function run(array $params)
     {
         $this->determineSourcePath();
         $this->publishConfig();
 
-        CLI::write('Config file was successfully generated.', 'green');       
+        CLI::write('Config file was successfully generated.', 'green');
     }
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     /**
      * Determines the current source path from which all other files are located.
@@ -41,14 +42,14 @@ class MinifyPublish extends BaseCommand
     {
         $this->sourcePath = realpath(__DIR__ . '/../');
 
-        if ($this->sourcePath == '/' || empty($this->sourcePath))
-        {
+        if ($this->sourcePath === '/' || empty($this->sourcePath)) {
             CLI::error('Unable to determine the correct source directory. Bailing.');
+
             exit();
         }
     }
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     /**
      * Publish config file.
@@ -58,45 +59,39 @@ class MinifyPublish extends BaseCommand
         $path = "{$this->sourcePath}/Config/Minifier.php";
 
         $content = file_get_contents($path);
-        $content = str_replace('namespace Michalsn\Minifier\Config', "namespace Config", $content);
-        $content = str_replace('extends BaseConfig', "extends \Michalsn\Minifier\Config\Minifier", $content);
+        $content = str_replace('namespace Michalsn\Minifier\Config', 'namespace Config', $content);
+        $content = str_replace('extends BaseConfig', 'extends \\Michalsn\\Minifier\\Config\\Minifier', $content);
 
         $this->writeFile('Config/Minifier.php', $content);
     }
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     /**
      * Write a file, catching any exceptions and showing a nicely formatted error.
-     *
-     * @param string $path
-     * @param string $content
      */
     protected function writeFile(string $path, string $content)
     {
-        $config = new Autoload();
+        $config  = new Autoload();
         $appPath = $config->psr4[APP_NAMESPACE];
 
         $directory = dirname($appPath . $path);
 
-        if (! is_dir($directory))
-        {
+        if (! is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
 
-        if (file_exists($appPath . $path) && CLI::prompt('Config file already exists, do you want to replace it?', ['y', 'n']) == 'n')
-        {
+        if (file_exists($appPath . $path) && CLI::prompt('Config file already exists, do you want to replace it?', ['y', 'n']) === 'n') {
             CLI::error('Cancelled');
+
             exit();
         }
 
-        try
-        {
+        try {
             write_file($appPath . $path, $content);
-        }
-        catch (\Exception $e)
-        {
+        } catch (Exception $e) {
             $this->showError($e);
+
             exit();
         }
 
@@ -105,6 +100,5 @@ class MinifyPublish extends BaseCommand
         CLI::write(CLI::color('Created: ', 'yellow') . $path);
     }
 
-    //--------------------------------------------------------------------
-
+    // --------------------------------------------------------------------
 }

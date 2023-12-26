@@ -1,6 +1,10 @@
-<?php namespace Michalsn\Minifier\Exceptions;
+<?php
 
-class MinifierException extends \RuntimeException implements ExceptionInterface
+namespace Michalsn\Minifier\Exceptions;
+
+use RuntimeException;
+
+class MinifierException extends RuntimeException implements ExceptionInterface
 {
     public static function forWrongFileExtension(string $ext)
     {
@@ -24,6 +28,6 @@ class MinifierException extends \RuntimeException implements ExceptionInterface
 
     public static function forFileCopyError(string $file1, string $file2)
     {
-        return new self(lang('Minifier.fileCopyError'. [$file1, $file2]));
+        return new self(lang('Minifier.fileCopyError' . [$file1, $file2]));
     }
 }

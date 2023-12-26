@@ -1,7 +1,9 @@
-<?php namespace Michalsn\Minifier\Commands;
+<?php
 
-use CodeIgniter\CLI\CLI;
+namespace Michalsn\Minifier\Commands;
+
 use CodeIgniter\CLI\BaseCommand;
+use CodeIgniter\CLI\CLI;
 use CodeIgniter\Config\Services;
 
 class MinifyCss extends BaseCommand
@@ -10,12 +12,10 @@ class MinifyCss extends BaseCommand
     protected $name        = 'minify:css';
     protected $description = 'Minify CSS assets.';
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
     /**
      * Prepare assets to use on website
-     *
-     * @param array $params
      */
     public function run(array $params)
     {
@@ -28,18 +28,17 @@ class MinifyCss extends BaseCommand
 
         $benchmark->stop('minifier');
 
-        if (! $result) 
-        {
+        if (! $result) {
             CLI::error($minify->getError());
+
             exit;
         }
 
         $time = $benchmark->getElapsedTime('minifier');
 
-        CLI::write('Finished in: ' . $time . 's.'); 
-        CLI::write('CSS files were successfully generated.', 'green');      
+        CLI::write('Finished in: ' . $time . 's.');
+        CLI::write('CSS files were successfully generated.', 'green');
     }
 
-    //--------------------------------------------------------------------
-
+    // --------------------------------------------------------------------
 }

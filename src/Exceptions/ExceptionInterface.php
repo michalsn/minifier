@@ -1,8 +1,7 @@
-<?php namespace Michalsn\Minifier\Exceptions;
+<?php
 
-/**
- * @package Michalsn\Minifier\Exceptions
- */
+namespace Michalsn\Minifier\Exceptions;
+
 interface ExceptionInterface
 {
 }

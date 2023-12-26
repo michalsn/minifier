@@ -1,22 +1,20 @@
-<?php namespace Michalsn\Minifier\Adapters;
+<?php
+
+namespace Michalsn\Minifier\Adapters;
 
 interface AdapterInterface
 {
     /**
      * Add file
      *
-     * @param string $file
-     *
      * @return void;
      */
-    public function add(string $file);
+    public function add(string $file): void;
 
     /**
      * Minify file
      *
-     * @param string $file
-     *
      * @return void;
      */
-    public function minify(string $file);
+    public function minify(string $file): void;
 }

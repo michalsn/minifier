@@ -1,22 +1,23 @@
-<?php namespace Michalsn\Minifier\Adapters\Js;
+<?php
 
+namespace Michalsn\Minifier\Adapters\Js;
+
+use MatthiasMullie\Minify\JS;
 use Michalsn\Minifier\Adapters\AdapterInterface;
 
 class MinifyAdapter implements AdapterInterface
 {
     /**
      * Adapter object.
-     *
-     * @var object
      */
-    protected $adapter;
+    protected JS $adapter;
 
     /**
      * __construct
      */
     public function __construct()
     {
-        $this->adapter = new \MatthiasMullie\Minify\JS();
+        $this->adapter = new JS();
     }
 
     /**
@@ -26,7 +27,7 @@ class MinifyAdapter implements AdapterInterface
      *
      * @return void;
      */
-    public function add(string $file)
+    public function add(string $file): void
     {
         $this->adapter->add($file);
     }
@@ -38,9 +39,8 @@ class MinifyAdapter implements AdapterInterface
      *
      * @return void;
      */
-    public function minify(string $file)
+    public function minify(string $file): void
     {
         $this->adapter->minify($file);
     }
-
 }
