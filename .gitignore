@@ -61,8 +61,17 @@ writable/uploads/*
 !writable/uploads/index.html
 
 writable/debugbar/*
+!writable/debugbar/.gitkeep
+
+writable/**/*.db
+writable/**/*.sqlite
 
 php_errors.log
+
+#-------------------------
+# User Guide Temp Files
+#-------------------------
+user_guide_src/build/*
 
 #-------------------------
 # Test Files
@@ -118,6 +127,4 @@ nb-configuration.xml
 /phpunit*.xml
 /.phpunit.*.cache
 
-tests/_support/assets/versions.json
-tests/_support/assets/js/all.min.js
-tests/_support/assets/css/all.min.css
+/.php-cs-fixer.php

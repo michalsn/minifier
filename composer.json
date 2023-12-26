@@ -1,42 +1,66 @@
 {
-  "name": "michalsn/minifier",
-  "description": "Assets minification and versioning library for CodeIgniter 4.",
-  "keywords": [
-      "codeigniter", "minification", "minify", "assets", "codeigniter4", "versioning"
-  ],
-  "homepage": "https://github.com/michalsn/minifier",
-  "authors": [
-    {
-      "name": "michalsn",
-      "homepage": "https://github.com/michalsn",
-      "role": "Developer"
+    "name": "michalsn/minifier",
+    "description": "Assets minification and versioning library for CodeIgniter 4.",
+    "keywords": [
+        "codeigniter", "minification", "minify", "assets", "codeigniter4", "versioning"
+    ],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "michalsn",
+            "homepage": "https://github.com/michalsn",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/michalsn/minifier",
+    "require": {
+        "php" : "^8.1",
+        "matthiasmullie/minify": "^1.3",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "codeigniter4/devkit": "^1.0",
+        "codeigniter4/framework": "^4.1"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Michalsn\\Minifier\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Support\\": "tests/_support"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "analyze": [
+            "phpstan analyze",
+            "psalm",
+            "rector process --dry-run"
+        ],
+        "sa": "@analyze",
+        "ci": [
+            "Composer\\Config::disableProcessTimeout",
+            "@cs",
+            "@deduplicate",
+            "@inspect",
+            "@analyze",
+            "@test"
+        ],
+        "cs": "php-cs-fixer fix --ansi --verbose --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix --ansi --verbose --diff",
+        "style": "@cs-fix",
+        "deduplicate": "phpcpd app/ src/",
+        "inspect": "deptrac analyze --cache-file=build/deptrac.cache",
+        "mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
+        "test": "phpunit"
     }
-  ],
-  "license": "MIT",
-  "require": {
-    "php" : ">=7.3",
-    "matthiasmullie/minify": "^1.3",
-    "ext-json": "*"
-  },
-  "minimum-stability": "dev",
-  "require-dev": {
-    "phpunit/phpunit" : "^8.5",
-    "codeigniter4/framework": "^4.1"
-  },
-  "autoload": {
-    "psr-4": {
-      "Michalsn\\Minifier\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\Support\\": "tests/_support"
-    }
-  },
-  "scripts": {
-    "test": "vendor/bin/phpunit",
-    "post-update-cmd": [
-      "@composer dump-autoload"
-    ]
-  }
 }
