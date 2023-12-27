@@ -3,11 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0] - 2023-12-29
+## [2.0.0]
 ### Changed
 - Minimum PHP version bumped to 8.1
-- Removed deprecated methods: `autoDeployCheck()`, `autoDeployCheckJs()`, `autoDeployCheckCss()`, `deployJs()`, `deployCss()`, `emptyFolder()`
-- Signature for `AdapterInterface` has changed
+- All deprecated methods has been removed: `autoDeployCheck()`, `autoDeployCheckJs()`, `autoDeployCheckCss()`, `deployJs()`, `deployCss()`, `emptyFolder()`
+- Signature for `AdapterInterface` methods has changed
 
 ### Added
 - Code quality tools: PHPStan, Psalm, Rector
