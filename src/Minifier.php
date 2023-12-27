@@ -202,8 +202,6 @@ class Minifier
      * @param array  $filenames Filenames to return
      * @param string $dir       Directory
      * @param string $tag       HTML tag
-     *
-     * @return array|string
      */
     protected function prepareOutput(array $filenames, string $dir, string $tag): array|string
     {
