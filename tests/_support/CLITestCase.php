@@ -4,6 +4,7 @@ namespace Tests\Support;
 
 use CodeIgniter\CLI\CLI;
 use CodeIgniter\Test\ReflectionHelper;
+use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 
 abstract class CLITestCase extends TestCase
 {
@@ -43,5 +44,19 @@ abstract class CLITestCase extends TestCase
         }
 
         return $output;
+    }
+
+    protected function setMinifierConfig()
+    {
+        $config             = config(MinifierConfig::class);
+        $config->dirJs      = SUPPORTPATH . 'assets/js';
+        $config->dirCss     = SUPPORTPATH . 'assets/css';
+        $config->dirMinJs   = SUPPORTPATH . 'assets/js';
+        $config->dirMinCss  = SUPPORTPATH . 'assets/css';
+        $config->dirVersion = SUPPORTPATH . 'assets';
+        $config->js         = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js']];
+        $config->css        = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']];
+
+        service('minifier', $config);
     }
 }

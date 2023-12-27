@@ -26,16 +26,7 @@ final class MinifyCssTest extends CLITestCase
 
     public function testRun(): void
     {
-        $config             = config(MinifierConfig::class);
-        $config->dirJs      = SUPPORTPATH . 'assets/js';
-        $config->dirCss     = SUPPORTPATH . 'assets/css';
-        $config->dirMinJs   = SUPPORTPATH . 'assets/js';
-        $config->dirMinCss  = SUPPORTPATH . 'assets/css';
-        $config->dirVersion = SUPPORTPATH . 'assets';
-        $config->js         = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js']];
-        $config->css        = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']];
-
-        service('minifier', $config);
+        $this->setMinifierConfig();
 
         CITestStreamFilter::registration();
         CITestStreamFilter::addOutputFilter();
