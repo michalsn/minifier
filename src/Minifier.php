@@ -4,7 +4,7 @@ namespace Michalsn\Minifier;
 
 use Exception;
 use FilesystemIterator;
-use Michalsn\Minifier\Config\Minifier as Config;
+use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 use Michalsn\Minifier\Exceptions\MinifierException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -19,11 +19,8 @@ class Minifier
     /**
      * Prepare config to use
      */
-    public function __construct(/**
-     * Config object.
-     */
-        protected Config $config
-    ) {
+    public function __construct(protected MinifierConfig $config)
+    {
         // make some checks for backward compatibility
         // just in case someone doesn't publish/update
         // their configuration file

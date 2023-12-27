@@ -1,6 +1,7 @@
 <?php
 
 use CodeIgniter\Test\CIUnitTestCase;
+use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 use Michalsn\Minifier\Exceptions\MinifierException;
 use Michalsn\Minifier\Minifier;
 
@@ -9,18 +10,18 @@ use Michalsn\Minifier\Minifier;
  */
 final class MinifierTest extends CIUnitTestCase
 {
-    private \Michalsn\Minifier\Config\Minifier $config;
+    private MinifierConfig $config;
     private ?Minifier $minifier = null;
     private array $ver          = [
-        'js'  => '9ef881911da8d7c4a1c2f19c4878d122',
-        'css' => '95cb11cf55b3f1164e80ae9393644ae3',
+        'js'  => '0809aec7f61adfe412ca61ccaf138f5a',
+        'css' => 'f5e8f62a0635f68cd0eb6b85056c1f3d',
     ];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->config = new \Michalsn\Minifier\Config\Minifier();
+        $this->config = new MinifierConfig();
 
         $this->config->baseUrl    = 'http://localhost/';
         $this->config->dirJs      = SUPPORTPATH . 'assets/js';
@@ -28,7 +29,7 @@ final class MinifierTest extends CIUnitTestCase
         $this->config->dirMinJs   = SUPPORTPATH . 'assets/js';
         $this->config->dirMinCss  = SUPPORTPATH . 'assets/css';
         $this->config->dirVersion = SUPPORTPATH . 'assets';
-        $this->config->js         = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']];
+        $this->config->js         = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js']];
         $this->config->css        = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']];
 
         if (file_exists($this->config->dirJs . '/new.js')) {
@@ -48,12 +49,12 @@ final class MinifierTest extends CIUnitTestCase
 
     public function testConfig()
     {
-        $this->assertInstanceOf(\Michalsn\Minifier\Config\Minifier::class, $this->config);
+        $this->assertInstanceOf(MinifierConfig::class, $this->config);
 
         $this->assertSame('<script type="text/javascript" src="%s"></script>', $this->config->tagJs);
         $this->assertSame('<link rel="stylesheet" href="%s">', $this->config->tagCss);
 
-        $this->assertSame(['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']], $this->config->js);
+        $this->assertSame(['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js']], $this->config->js);
         $this->assertSame(['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']], $this->config->css);
     }
 
@@ -263,7 +264,7 @@ final class MinifierTest extends CIUnitTestCase
     public function testAutoDeployOnChangeJsFalse()
     {
         $this->config->autoDeployOnChange = true;
-        $this->config->js                 = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js']];
+        $this->config->js                 = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js']];
         $this->minifier                   = new Minifier($this->config);
 
         $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckJs');
@@ -274,7 +275,7 @@ final class MinifierTest extends CIUnitTestCase
     public function testAutoDeployOnChangeJsTrue()
     {
         $this->config->autoDeployOnChange = true;
-        $this->config->js                 = ['all.min.js' => ['bootstrap.js', 'jquery-3.4.1.js', 'main.js', 'new.js']];
+        $this->config->js                 = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js', 'new.js']];
         $this->minifier                   = new Minifier($this->config);
 
         sleep(1);
