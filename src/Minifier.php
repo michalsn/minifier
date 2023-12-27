@@ -259,7 +259,8 @@ class Minifier
      */
     protected function setVersion(string $mode, array $files, string $dir): void
     {
-        $dir = rtrim($dir, '/');
+        $versions = [];
+        $dir      = rtrim($dir, '/');
 
         if (file_exists($dir . '/versions.json')) {
             $versions = json_decode(file_get_contents($dir . '/versions.json'), true);

@@ -34,7 +34,7 @@ abstract class CLITestCase extends TestCase
     {
         $colors = $this->getPrivateProperty(CLI::class, 'foreground_colors');
         $colors = array_values(array_map(static fn ($color) => "\033[" . $color . 'm', $colors));
-        $colors = array_merge(["\033[0m"], $colors);
+        $colors = ["\033[0m", ...$colors];
 
         $output = str_replace($colors, '', trim($output));
 
