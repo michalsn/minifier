@@ -18,20 +18,6 @@ class Minifier
      */
     public function __construct(protected MinifierConfig $config)
     {
-        // Make some checks for backward compatibility
-        // just in case someone doesn't publish/update
-        // their configuration file
-        if (! isset($this->config->baseJsUrl)) {
-            $this->config->baseJsUrl = null;
-        }
-
-        if (! isset($this->config->baseCssUrl)) {
-            $this->config->baseCssUrl = null;
-        }
-
-        if (! isset($this->config->returnType)) {
-            $this->config->returnType = 'html';
-        }
     }
 
     /**
@@ -137,7 +123,7 @@ class Minifier
         }
 
         $assets   = [$filename => $this->config->{$fileType}[$filename]];
-        $filePath = $this->config->{$dirMin} . '/' . $filename;
+        $filePath = $this->config->{$dirMin} . DIRECTORY_SEPARATOR . $filename;
 
         // if file is not deployed
         if (! file_exists($filePath)) {
@@ -151,7 +137,7 @@ class Minifier
 
         // loop though the files and check last update time
         foreach ($assets[$filename] as $file) {
-            $currentFileTime = filemtime($this->config->{$dir} . '/' . $file);
+            $currentFileTime = filemtime($this->config->{$dir} . DIRECTORY_SEPARATOR . $file);
             if ($currentFileTime > $lastDeployTime) {
                 $this->deployFiles($fileType, $assets, $this->config->{$dir}, $this->config->{$dirMin});
 
@@ -231,13 +217,13 @@ class Minifier
 
         // load all versions numbers
         if ($versions === null) {
-            $dir = rtrim($dir, '/');
+            $dir = rtrim($dir, DIRECTORY_SEPARATOR);
 
-            if (! file_exists($dir . '/versions.json')) {
+            if (! file_exists($dir . DIRECTORY_SEPARATOR . 'versions.json')) {
                 throw MinifierException::forNoVersioningFile();
             }
 
-            $versions = json_decode(file_get_contents($dir . '/versions.json'), true);
+            $versions = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'versions.json'), true);
         }
 
         return $versions;
@@ -253,10 +239,10 @@ class Minifier
     protected function setVersion(string $mode, array $files, string $dir): void
     {
         $versions = [];
-        $dir      = rtrim($dir, '/');
+        $dir      = rtrim($dir, DIRECTORY_SEPARATOR);
 
-        if (file_exists($dir . '/versions.json')) {
-            $versions = json_decode(file_get_contents($dir . '/versions.json'), true);
+        if (file_exists($dir . DIRECTORY_SEPARATOR . 'versions.json')) {
+            $versions = json_decode(file_get_contents($dir . DIRECTORY_SEPARATOR . 'versions.json'), true);
         }
 
         if ($mode === 'all') {
@@ -265,7 +251,7 @@ class Minifier
             $versions[$mode] = $files;
         }
 
-        file_put_contents($dir . '/versions.json', json_encode($versions));
+        file_put_contents($dir . DIRECTORY_SEPARATOR . 'versions.json', json_encode($versions));
     }
 
     /**
