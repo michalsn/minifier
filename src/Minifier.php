@@ -93,22 +93,15 @@ class Minifier
             throw MinifierException::forIncorrectDeploymentMode($mode);
         }
 
-        $files = [];
-
         try {
-            switch ($mode) {
-                case 'js':
-                    $files = $this->deployFiles('js', $this->config->js, $this->config->dirJs, $this->config->dirMinJs);
-                    break;
-
-                case 'css':
-                    $files = $this->deployFiles('css', $this->config->css, $this->config->dirCss, $this->config->dirMinCss);
-                    break;
-
-                default:
-                    $files['js']  = $this->deployFiles('js', $this->config->js, $this->config->dirJs, $this->config->dirMinJs);
-                    $files['css'] = $this->deployFiles('css', $this->config->css, $this->config->dirCss, $this->config->dirMinCss);
-            }
+            $files = match ($mode) {
+                'js'    => $this->deployFiles('js', $this->config->js, $this->config->dirJs, $this->config->dirMinJs),
+                'css'   => $this->deployFiles('css', $this->config->css, $this->config->dirCss, $this->config->dirMinCss),
+                default => [
+                    'js'  => $this->deployFiles('js', $this->config->js, $this->config->dirJs, $this->config->dirMinJs),
+                    'css' => $this->deployFiles('css', $this->config->css, $this->config->dirCss, $this->config->dirMinCss),
+                ],
+            };
 
             $this->setVersion($mode, $files, $this->config->dirVersion);
 
