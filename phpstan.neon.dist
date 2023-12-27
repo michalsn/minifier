@@ -8,7 +8,6 @@ parameters:
 		- vendor/codeigniter4/framework/system/Test/bootstrap.php
 	excludePaths:
 	ignoreErrors:
-		- '#Call to deprecated function random_string\(\):#'
 	universalObjectCratesClasses:
 		- CodeIgniter\Entity
 		- CodeIgniter\Entity\Entity

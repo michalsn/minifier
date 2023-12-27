@@ -8,6 +8,6 @@ if (! function_exists('minifier')) {
      */
     function minifier(string $filename): string
     {
-        return \CodeIgniter\Config\Services::minifier()->load($filename);
+        return service('minifier')->load($filename);
     }
 }

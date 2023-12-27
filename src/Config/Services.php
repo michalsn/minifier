@@ -3,6 +3,7 @@
 namespace Michalsn\Minifier\Config;
 
 use CodeIgniter\Config\BaseService;
+use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 use Michalsn\Minifier\Minifier;
 
 class Services extends BaseService
@@ -13,6 +14,7 @@ class Services extends BaseService
             return static::getSharedInstance('minifier');
         }
 
+        /** @var MinifierConfig $config */
         $config = config('Minifier');
 
         return new Minifier($config);

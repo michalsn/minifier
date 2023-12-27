@@ -1,16 +1,17 @@
 <?php
 
+use CodeIgniter\Test\CIUnitTestCase;
 use Michalsn\Minifier\Exceptions\MinifierException;
 use Michalsn\Minifier\Minifier;
 
 /**
  * @internal
  */
-final class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
+final class MinifierTest extends CIUnitTestCase
 {
-    protected $config;
-    protected $minifier;
-    protected $ver = [
+    private \Michalsn\Minifier\Config\Minifier $config;
+    private ?Minifier $minifier = null;
+    private array $ver          = [
         'js'  => '9ef881911da8d7c4a1c2f19c4878d122',
         'css' => '95cb11cf55b3f1164e80ae9393644ae3',
     ];
@@ -47,7 +48,7 @@ final class MinifierTest extends \CodeIgniter\Test\CIUnitTestCase
 
     public function testConfig()
     {
-        $this->assertTrue($this->config instanceof \Michalsn\Minifier\Config\Minifier);
+        $this->assertInstanceOf(\Michalsn\Minifier\Config\Minifier::class, $this->config);
 
         $this->assertSame('<script type="text/javascript" src="%s"></script>', $this->config->tagJs);
         $this->assertSame('<link rel="stylesheet" href="%s">', $this->config->tagCss);

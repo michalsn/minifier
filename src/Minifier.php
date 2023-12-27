@@ -12,24 +12,18 @@ use RecursiveIteratorIterator;
 class Minifier
 {
     /**
-     * Config object.
-     */
-    protected Config $config;
-
-    /**
      * Error string.
      */
     protected string $error = '';
 
-    // --------------------------------------------------------------------
-
     /**
      * Prepare config to use
      */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-
+    public function __construct(/**
+     * Config object.
+     */
+        protected Config $config
+    ) {
         // make some checks for backward compatibility
         // just in case someone doesn't publish/update
         // their configuration file
@@ -46,16 +40,12 @@ class Minifier
         }
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Load minified file
      *
      * @param string $filename File name
-     *
-     * @return array|string
      */
-    public function load(string $filename)
+    public function load(string $filename): array|string
     {
         // determine file extension
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
@@ -98,8 +88,6 @@ class Minifier
         return $this->prepareOutput($filenames, $dir, $tag);
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Deploy
      *
@@ -138,8 +126,6 @@ class Minifier
         }
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Return error
      */
@@ -147,8 +133,6 @@ class Minifier
     {
         return $this->error;
     }
-
-    // --------------------------------------------------------------------
 
     /**
      * Auto deploy check
@@ -163,8 +147,6 @@ class Minifier
         $this->autoDeployCheckFile($ext, $filename);
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Auto deploy check for JS files
      *
@@ -177,8 +159,6 @@ class Minifier
         return $this->autoDeployCheckFile('js', $filename);
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Auto deploy check for CSS files
      *
@@ -190,8 +170,6 @@ class Minifier
     {
         return $this->autoDeployCheckFile('css', $filename);
     }
-
-    // --------------------------------------------------------------------
 
     /**
      * Auto deploy check for CSS files
@@ -234,8 +212,6 @@ class Minifier
         return false;
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Determine URL address for asset
      *
@@ -262,8 +238,6 @@ class Minifier
 
         return $dir;
     }
-
-    // --------------------------------------------------------------------
 
     /**
      * Prepare output to return a desired format
@@ -298,8 +272,6 @@ class Minifier
         return $filenames;
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Load version file
      *
@@ -322,8 +294,6 @@ class Minifier
 
         return $versions;
     }
-
-    // --------------------------------------------------------------------
 
     /**
      * Set version
@@ -349,8 +319,6 @@ class Minifier
         file_put_contents($dir . '/versions.json', json_encode($versions));
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Deploy JS
      *
@@ -365,8 +333,6 @@ class Minifier
         return $this->deployFiles('js', $assets, $dir, $minDir);
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Deploy CSS
      *
@@ -380,8 +346,6 @@ class Minifier
     {
         return $this->deployFiles('css', $assets, $dir, $minDir);
     }
-
-    // --------------------------------------------------------------------
 
     /**
      * Deploy files
@@ -426,8 +390,6 @@ class Minifier
         return $results;
     }
 
-    // --------------------------------------------------------------------
-
     /**
      * Copy File
      *
@@ -446,8 +408,6 @@ class Minifier
             throw MinifierException::forFileCopyError($dir, $minDir);
         }
     }
-
-    // --------------------------------------------------------------------
 
     /**
      * Copy File

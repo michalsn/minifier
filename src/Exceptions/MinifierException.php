@@ -28,6 +28,6 @@ class MinifierException extends RuntimeException implements ExceptionInterface
 
     public static function forFileCopyError(string $file1, string $file2)
     {
-        return new self(lang('Minifier.fileCopyError' . [$file1, $file2]));
+        return new self(lang('Minifier.fileCopyError', [$file1, $file2]));
     }
 }
