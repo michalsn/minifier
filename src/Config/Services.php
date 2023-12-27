@@ -14,7 +14,6 @@ class Services extends BaseService
             return static::getSharedInstance('minifier', $config);
         }
 
-        /** @var MinifierConfig $config */
         $config ??= config('Minifier');
 
         return new Minifier($config);
