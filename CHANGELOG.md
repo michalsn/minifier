@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [2.0.0]
+## [2.0.0] - 2023-12-27
 ### Changed
 - Minimum PHP version bumped to 8.1
 - All deprecated methods has been removed: `autoDeployCheck()`, `autoDeployCheckJs()`, `autoDeployCheckCss()`, `deployJs()`, `deployCss()`, `emptyFolder()`
