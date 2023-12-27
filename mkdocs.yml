@@ -33,6 +33,7 @@ extra:
       link: https://github.com/michalsn/minifier
       name: GitHub
 
+site_url: https://michalsn.github.io/minifier/
 repo_url: https://github.com/michalsn/minifier
 edit_uri: edit/develop/docs/
 
