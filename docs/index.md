@@ -9,10 +9,23 @@ Asset minification and versioning library for CodeIgniter 4.
 
 ## Overview
 
-We can define files we want to combine and minify and then use it with only one line:
+We can define files we want to combine and minify:
+
+```php
+public $js = [
+    'all.min.js' => ['file1.js', 'file2.js']
+];
+```
+
+And then use it with only one line:
 
 ```php
 echo minifier('all.min.js');
-// <script src="http://localhost/assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122" type="text/javascript"></script>
+```
+
+This will return ready to use HTML tag:
+
+```html
+<script src="http://localhost/assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122" type="text/javascript"></script>
 ```
 

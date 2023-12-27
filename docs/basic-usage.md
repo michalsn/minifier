@@ -16,11 +16,9 @@ Now to generate a proper tag with desired file to load, you have to make a simpl
 
 ```php
 minifier('all.min.js');
-```
 
-or
+// or / and
 
-```php
 minifier('all.min.css');
 ```
 
@@ -29,11 +27,9 @@ This will produce:
 ```html
 <script type="text/javascript"
         src="http://localhost/assets/js/all.min.js?v=9ef881911da8d7c4a1c2f19c4878d122"></script>
-```
 
-or
+<!-- or / and -->
 
-```html
 <link rel="stylesheet"
       href="http://localhost/assets/css/all.min.css?v=50a35b0b1d1c3798aa556b8245314930">
 ```

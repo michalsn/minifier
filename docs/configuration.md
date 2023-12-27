@@ -15,7 +15,7 @@ We will get our copy ready for modifications.
 Now, you should define an array of files that you want to minify, ie:
 
 ```php
-public $js = [
+public array $js = [
     'all.min.js' => [
         'jquery-3.7.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
     ]
@@ -23,7 +23,7 @@ public $js = [
 
 // or / and
 
-public $css = [
+public array $css = [
     'all.min.css' => [
         'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
     ]

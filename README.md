@@ -32,11 +32,9 @@ public $js = [
         'jquery-3.7.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
     ]
 ];
-```
 
-or
+// or / and
 
-```php
 public $css = [
     'all.min.css' => [
         'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
