@@ -7,6 +7,9 @@ Asset minification and versioning library for CodeIgniter 4.
 [![Deptrac](https://github.com/michalsn/minifier/actions/workflows/deptrac.yml/badge.svg)](https://github.com/michalsn/minifier/actions/workflows/deptrac.yml)
 [![Coverage Status](https://coveralls.io/repos/github/michalsn/minifier/badge.svg?branch=develop)](https://coveralls.io/github/michalsn/minifier?branch=develop)
 
+![PHP](https://img.shields.io/badge/PHP-%5E8.1-blue)
+![CodeIgniter](https://img.shields.io/badge/CodeIgniter-%5E4.1-blue)
+
 ## Installation
 
 ```console
