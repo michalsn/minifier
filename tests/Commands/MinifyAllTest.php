@@ -3,7 +3,6 @@
 namespace Tests\Commands;
 
 use CodeIgniter\Test\Filters\CITestStreamFilter;
-use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 use Tests\Support\CLITestCase;
 
 /**
