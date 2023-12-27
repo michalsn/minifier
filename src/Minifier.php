@@ -3,11 +3,8 @@
 namespace Michalsn\Minifier;
 
 use Exception;
-use FilesystemIterator;
 use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 use Michalsn\Minifier\Exceptions\MinifierException;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 class Minifier
 {
@@ -21,7 +18,7 @@ class Minifier
      */
     public function __construct(protected MinifierConfig $config)
     {
-        // make some checks for backward compatibility
+        // Make some checks for backward compatibility
         // just in case someone doesn't publish/update
         // their configuration file
         if (! isset($this->config->baseJsUrl)) {
@@ -132,43 +129,6 @@ class Minifier
     }
 
     /**
-     * Auto deploy check
-     *
-     * @param string $filename Filename
-     * @param string $ext      File extension
-     *
-     * @deprecated deprecated since version 1.4.0 - use autoDeployCheckFile() instead
-     */
-    protected function autoDeployCheck(string $filename, string $ext): void
-    {
-        $this->autoDeployCheckFile($ext, $filename);
-    }
-
-    /**
-     * Auto deploy check for JS files
-     *
-     * @param string $filename Filename
-     *
-     * @deprecated deprecated since version 1.4.0 - use autoDeployCheckFile() instead
-     */
-    protected function autoDeployCheckJs(string $filename): bool
-    {
-        return $this->autoDeployCheckFile('js', $filename);
-    }
-
-    /**
-     * Auto deploy check for CSS files
-     *
-     * @param string $filename Filename
-     *
-     * @deprecated deprecated since version 1.4.0 - use autoDeployCheckFile() instead
-     */
-    protected function autoDeployCheckCss(string $filename): bool
-    {
-        return $this->autoDeployCheckFile('css', $filename);
-    }
-
-    /**
      * Auto deploy check for CSS files
      *
      * @param string $fileType File type [css, js]
@@ -245,7 +205,7 @@ class Minifier
      *
      * @return array|string
      */
-    protected function prepareOutput(array $filenames, string $dir, string $tag)
+    protected function prepareOutput(array $filenames, string $dir, string $tag): array|string
     {
         // prepare output
         $output = '';
@@ -317,34 +277,6 @@ class Minifier
     }
 
     /**
-     * Deploy JS
-     *
-     * @param array       $assets JS assets
-     * @param string      $dir    Directory
-     * @param string|null $minDir Minified directory
-     *
-     * @deprecated deprecated since version 1.4.0 - use deployFiles() instead
-     */
-    protected function deployJs(array $assets, string $dir, ?string $minDir = null): array
-    {
-        return $this->deployFiles('js', $assets, $dir, $minDir);
-    }
-
-    /**
-     * Deploy CSS
-     *
-     * @param array       $assets CSS assets
-     * @param string      $dir    Directory
-     * @param string|null $minDir Minified directory
-     *
-     * @deprecated deprecated since version 1.4.0 - use deployFiles() instead
-     */
-    protected function deployCss(array $assets, string $dir, ?string $minDir = null): array
-    {
-        return $this->deployFiles('css', $assets, $dir, $minDir);
-    }
-
-    /**
      * Deploy files
      *
      * @param string      $fileType File type [css, js]
@@ -367,11 +299,11 @@ class Minifier
         $results = [];
 
         foreach ($assets as $asset => $files) {
-            $miniCss = new $class();
+            $minClass = new $class();
 
             foreach ($files as $file) {
                 if ($this->config->minify) {
-                    $miniCss->add($dir . DIRECTORY_SEPARATOR . $file);
+                    $minClass->add($dir . DIRECTORY_SEPARATOR . $file);
                 } elseif ($dir !== $minDir) {
                     $this->copyFile($dir . DIRECTORY_SEPARATOR . $file, $minDir . DIRECTORY_SEPARATOR . $file);
                     $results[$file] = md5_file($minDir . DIRECTORY_SEPARATOR . $file);
@@ -379,7 +311,7 @@ class Minifier
             }
 
             if ($this->config->minify) {
-                $miniCss->minify($minDir . DIRECTORY_SEPARATOR . $asset);
+                $minClass->minify($minDir . DIRECTORY_SEPARATOR . $asset);
                 $results[$asset] = md5_file($minDir . DIRECTORY_SEPARATOR . $asset);
             }
         }
@@ -403,26 +335,6 @@ class Minifier
 
         if (! copy($dir, $minDir)) {
             throw MinifierException::forFileCopyError($dir, $minDir);
-        }
-    }
-
-    /**
-     * Copy File
-     *
-     * @param string $dir Directory
-     *
-     * @deprecated deprecated since version 1.4.0
-     */
-    protected function emptyFolder(string $dir): void
-    {
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $fileInfo) {
-            $todo = ($fileInfo->isDir() ? 'rmdir' : 'unlink');
-            $todo($fileInfo->getRealPath());
         }
     }
 }

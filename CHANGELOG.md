@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0] - 2023-12-29
+### Changed
+- Minimum PHP version bumped to 8.1
+- Removed deprecated methods: `autoDeployCheck()`, `autoDeployCheckJs()`, `autoDeployCheckCss()`, `deployJs()`, `deployCss()`, `emptyFolder()`
+- Signature for `AdapterInterface` has changed
+
+### Added
+- Code quality tools: PHPStan, Psalm, Rector
+- Proper documentation
+
 ## [1.4.1] - 2021-11-22
 ### Fixed
 - Fixed an issue with `autoDeployOnChange` option, when `minDirJs` or `minDirCss` was set. Thanks to [@paul45](https://github.com/paul45)

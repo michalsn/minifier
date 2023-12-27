@@ -2,7 +2,7 @@
 
 if (! function_exists('minifier')) {
     /**
-     * load asset file (js, css)
+     * Load asset file (js, css)
      *
      * @param string $filename Compressed asset filename
      */

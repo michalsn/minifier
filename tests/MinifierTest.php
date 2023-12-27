@@ -1,14 +1,16 @@
 <?php
 
-use CodeIgniter\Test\CIUnitTestCase;
+namespace Tests;
+
 use Michalsn\Minifier\Config\Minifier as MinifierConfig;
 use Michalsn\Minifier\Exceptions\MinifierException;
 use Michalsn\Minifier\Minifier;
+use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-final class MinifierTest extends CIUnitTestCase
+final class MinifierTest extends TestCase
 {
     private MinifierConfig $config;
     private ?Minifier $minifier = null;
@@ -39,12 +41,11 @@ final class MinifierTest extends CIUnitTestCase
         if (file_exists($this->config->dirCss . '/new.css')) {
             unlink($this->config->dirCss . '/new.css');
         }
-        /*
-                if (file_exists($this->config->dirVersion . '/versions.js'))
-                {
-                    unlink($this->config->dirVersion . '/versions.js');
-                }
-        */
+
+        //        if (file_exists($this->config->dirVersion . '/versions.js'))
+        //        {
+        //            unlink($this->config->dirVersion . '/versions.js');
+        //        }
     }
 
     public function testConfig()
@@ -261,56 +262,6 @@ final class MinifierTest extends CIUnitTestCase
         $this->minifier->load('all.min.css');
     }
 
-    public function testAutoDeployOnChangeJsFalse()
-    {
-        $this->config->autoDeployOnChange = true;
-        $this->config->js                 = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js']];
-        $this->minifier                   = new Minifier($this->config);
-
-        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckJs');
-
-        $this->assertFalse($method('all.min.js'));
-    }
-
-    public function testAutoDeployOnChangeJsTrue()
-    {
-        $this->config->autoDeployOnChange = true;
-        $this->config->js                 = ['all.min.js' => ['bootstrap.js', 'jquery-3.7.1.js', 'main.js', 'new.js']];
-        $this->minifier                   = new Minifier($this->config);
-
-        sleep(1);
-        file_put_contents($this->config->dirJs . '/new.js', '//data;');
-
-        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckJs');
-
-        $this->assertTrue($method('all.min.js'));
-    }
-
-    public function testAutoDeployOnChangeCssFalse()
-    {
-        $this->config->autoDeployOnChange = true;
-        $this->config->css                = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css']];
-        $this->minifier                   = new Minifier($this->config);
-
-        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckCss');
-
-        $this->assertFalse($method('all.min.css'));
-    }
-
-    public function testAutoDeployOnChangeCssTrue()
-    {
-        $this->config->autoDeployOnChange = true;
-        $this->config->css                = ['all.min.css' => ['bootstrap.css', 'font-awesome.css', 'main.css', 'new.css']];
-        $this->minifier                   = new Minifier($this->config);
-
-        sleep(1);
-        file_put_contents($this->config->dirCss . '/new.css', '//data;');
-
-        $method = $this->getPrivateMethodInvoker($this->minifier, 'autoDeployCheckCss');
-
-        $this->assertTrue($method('all.min.css'));
-    }
-
     public function testDeployJsWithDirMinJs()
     {
         if (file_exists($this->config->dirMinJs . '/all.min.js')) {
@@ -357,11 +308,27 @@ final class MinifierTest extends CIUnitTestCase
         $this->config->dirMinCss = SUPPORTPATH . 'public/css';
         $this->minifier          = new Minifier($this->config);
 
-        $result = $this->minifier->deploy('all');
+        $result = $this->minifier->deploy();
 
         $this->assertTrue($result);
 
         $this->assertFileExists($this->config->dirMinJs . DIRECTORY_SEPARATOR . array_key_first($this->config->js));
         $this->assertFileExists($this->config->dirMinCss . DIRECTORY_SEPARATOR . array_key_first($this->config->css));
+    }
+
+    public function testAutoDeployOnChange()
+    {
+        $this->config->returnType         = 'array';
+        $this->config->autoDeployOnChange = true;
+        $this->minifier                   = new Minifier($this->config);
+
+        $filePath = SUPPORTPATH . 'assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'main.js';
+        $backup   = file_get_contents($filePath);
+        file_put_contents($filePath, 'jsData = "test";');
+
+        $result = $this->minifier->load('all.min.js');
+        $this->assertSame(['http://localhost' . SUPPORTPATH . 'assets/js/all.min.js?v=0809aec7f61adfe412ca61ccaf138f5a'], $result);
+
+        file_put_contents($filePath, $backup);
     }
 }

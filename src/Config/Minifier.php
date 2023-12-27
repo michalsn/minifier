@@ -110,7 +110,7 @@ class Minifier extends BaseConfig
     // --------------------------------------------------------------------
     // Return type
     // --------------------------------------------------------------------
-    // Determines how the files will be returned. The dafault value is
+    // Determines how the files will be returned. The default value is
     // 'html' and it uses the $tagJs and $tagCss variables. Using 'array'
     // will return the php array and 'json' type will return a json string.
     //
@@ -137,8 +137,7 @@ class Minifier extends BaseConfig
     //          'jquery-3.2.1.min.js', 'bootstrap-3.3.7.min.js', 'main.js',
     //      ],
 
-    public array $js = [
-    ];
+    public array $js = [];
 
     // --------------------------------------------------------------------
     // CSS files config
@@ -150,6 +149,5 @@ class Minifier extends BaseConfig
     //          'bootstrap-3.3.7.min.css', 'font-awesome-4.7.0.min.css', 'main.css',
     //      ],
 
-    public array $css = [
-    ];
+    public array $css = [];
 }
